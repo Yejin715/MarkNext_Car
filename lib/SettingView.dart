@@ -33,6 +33,18 @@ class _SettingViewState extends State<SettingView> {
         : '',
   );
 
+  final TextEditingController leftcrabthresholdController =
+      TextEditingController(
+          text: (GlobalVariables.LeftCrab_Threshold).toString());
+  final TextEditingController rightcrabthresholdController =
+      TextEditingController(
+          text: (GlobalVariables.RightCrab_Threshold).toString());
+  final TextEditingController fwscrabthresholdController =
+      TextEditingController(
+          text: (GlobalVariables.FWSCrab_Threshold).toString());
+  final TextEditingController d4crabthresholdController = TextEditingController(
+      text: (GlobalVariables.D4Crab_Threshold).toString());
+
   @override
   Widget build(BuildContext context) {
     final Size_Height = MediaQuery.of(context).size.height;
@@ -311,6 +323,195 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ],
             ),
+          ),
+        ),
+        Container(
+          margin: EdgeInsets.fromLTRB(
+              (Size_Width * 0.3), 10, (Size_Width * 0.3), 0),
+          child: Text(
+            'Threshold Setting',
+            style: TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: (Size_Width * 0.02),
+              color: Color(0xFFFFFFFF),
+            ),
+          ),
+        ),
+        Container(
+          width: Size_Width * 0.8,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                height: Size_Height * 0.1,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'LeftCrab : ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: (Size_Width * 0.015),
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+              ),
+              Container(
+                width: Size_Width * 0.07,
+                height: Size_Height * 0.1,
+                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF3F3F3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: (Size_Width * 0.015),
+                      color: Color(0xFF2A2A2A)),
+                  keyboardType: TextInputType.number,
+                  controller: leftcrabthresholdController,
+                ),
+              ),
+              Container(
+                height: Size_Height * 0.1,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'RightCrab : ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: (Size_Width * 0.015),
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+              ),
+              Container(
+                width: Size_Width * 0.07,
+                height: Size_Height * 0.1,
+                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF3F3F3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: (Size_Width * 0.015),
+                      color: Color(0xFF2A2A2A)),
+                  keyboardType: TextInputType.number,
+                  controller: rightcrabthresholdController,
+                ),
+              ),
+              Container(
+                height: Size_Height * 0.1,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'FWSCrab : ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: (Size_Width * 0.015),
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+              ),
+              Container(
+                width: Size_Width * 0.07,
+                height: Size_Height * 0.1,
+                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF3F3F3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: (Size_Width * 0.015),
+                      color: Color(0xFF2A2A2A)),
+                  keyboardType: TextInputType.number,
+                  controller: fwscrabthresholdController,
+                ),
+              ),
+              Container(
+                height: Size_Height * 0.1,
+                alignment: Alignment.centerRight,
+                child: Text(
+                  'D4Crab : ',
+                  style: TextStyle(
+                    fontWeight: FontWeight.w600,
+                    fontSize: (Size_Width * 0.015),
+                    color: Color(0xFFFFFFFF),
+                  ),
+                ),
+              ),
+              Container(
+                width: Size_Width * 0.07,
+                height: Size_Height * 0.1,
+                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                decoration: BoxDecoration(
+                  color: Color(0xFFF3F3F3),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  style: new TextStyle(
+                      fontWeight: FontWeight.w600,
+                      fontSize: (Size_Width * 0.015),
+                      color: Color(0xFF2A2A2A)),
+                  keyboardType: TextInputType.number,
+                  controller: d4crabthresholdController,
+                ),
+              ),
+              Container(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: BackdropFilter(
+                    filter: ImageFilter.blur(
+                      sigmaX: 2,
+                      sigmaY: 2,
+                    ),
+                    child: ElevatedButton(
+                      onPressed: () {
+                        GlobalVariables.LeftCrab_Threshold =
+                            double.tryParse(leftcrabthresholdController.text) ??
+                                2.5;
+                        GlobalVariables.RightCrab_Threshold = double.tryParse(
+                                rightcrabthresholdController.text) ??
+                            -2.5;
+                        GlobalVariables.FWSCrab_Threshold =
+                            double.tryParse(fwscrabthresholdController.text) ??
+                                4.5;
+                        GlobalVariables.D4Crab_Threshold =
+                            double.tryParse(d4crabthresholdController.text) ??
+                                -4.5;
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color(0xFF748FC2), // 버튼 색상
+                        elevation: 0,
+                        padding: EdgeInsets.zero,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                      ),
+                      child: Container(
+                        width: (Size_Width * 0.1),
+                        padding: EdgeInsets.symmetric(vertical: 10),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Set',
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: (Size_Width * 0.02),
+                            color: Color(0xFF2A2A2A),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
         Container(

@@ -46,9 +46,14 @@ class SetRxData {
 }
 
 class GlobalVariables {
-  static double pitch = 0.0, roll = 0.0, yaw = 0.0;
-  static double yaw_init = 0;
-  static int drive_selectedButtonIndex = 0;
+  static bool isRotateVisible = false;
+  static bool isRotateshow = false;
+  static bool isArrowshow = false;
+  static bool isArrowVisible = false;
+  static late AnimationController rotateanimationController;
+  static late AnimationController streatanimationController;
+  static int drive_selectedButtonIndex = -1;
+  static List<String> driveModes = ['P', 'R', 'N', 'D']; // 드라이브 모드 리스트
 
   static bool isScrollDragging = false; // 클래스에 포함된 변수
   static bool isJoyLeftDragging = false; // 클래스에 포함된 변수
@@ -64,6 +69,16 @@ class GlobalVariables {
   static int PADPort = 0;
   static String TargetIp = "";
   static int TargetPort = 0;
+
+  static double LeftCrab_Threshold = 2.5;
+  static double RightCrab_Threshold = -2.5;
+  static double FWSCrab_Threshold = 4.5;
+  static double D4Crab_Threshold = -4.5;
+
+  static List<List<Color>> selectColor11x11 = List.generate(
+    11,
+    (i) => List<Color>.filled(11, Colors.transparent),
+  );
 
   static List<String> DriveMode = [
     "Parking",
@@ -83,6 +98,19 @@ class GlobalVariables {
   // static List<int> TxData = List<int>.filled(15, 0);
   static List<int> TxData = List<int>.filled(27, 0);
   static List<int> RxData = List<int>.filled(38, 0);
+
+  static void resetColor() {
+    GlobalVariables.selectColor11x11 = List.generate(
+      11,
+      (i) => List<Color>.filled(11, Colors.transparent),
+    );
+  }
+
+  static void setPivot(int xvalue, int yvalue) {
+    SetTxData.Button_Pedal = 7;
+    SetTxData.Pivot_Rcx = (xvalue - 5);
+    SetTxData.Pivot_Rcy = -(yvalue - 5);
+  }
 
   static Future<String> getIpAddress() async {
     try {
@@ -124,6 +152,62 @@ class TimerMonitor {
       final connectivityResult = await Connectivity().checkConnectivity();
       final isWifiConnected = connectivityResult == ConnectivityResult.wifi;
       _wifiStreamController.add(isWifiConnected);
+      switch (SetTxData.Button_Pedal) {
+        case 0:
+        case 1:
+        case 2:
+        case 3:
+          GlobalVariables.resetColor();
+          SetTxData.Pivot_Rcx = 0;
+          SetTxData.Pivot_Rcy = 0;
+
+          if (GlobalVariables.isArrowshow) {
+            GlobalVariables.isArrowshow = false;
+            GlobalVariables.streatanimationController.stop();
+          }
+          break;
+        case 4:
+          GlobalVariables.drive_selectedButtonIndex = -1;
+          GlobalVariables.resetColor();
+          SetTxData.Pivot_Rcx = 0;
+          SetTxData.Pivot_Rcy = 0;
+          GlobalVariables.isArrowVisible = true;
+          if (!GlobalVariables.isArrowshow) {
+            GlobalVariables.isArrowshow = true;
+            GlobalVariables.streatanimationController.repeat();
+          }
+          break;
+        case 5:
+          GlobalVariables.drive_selectedButtonIndex = -1;
+          GlobalVariables.resetColor();
+          SetTxData.Pivot_Rcx = 0;
+          SetTxData.Pivot_Rcy = 0;
+          GlobalVariables.isArrowVisible = false;
+          if (!GlobalVariables.isArrowshow) {
+            GlobalVariables.isArrowshow = true;
+            GlobalVariables.streatanimationController.repeat();
+          }
+          break;
+        case 6:
+        case 7:
+          GlobalVariables.drive_selectedButtonIndex = -1;
+          if (GlobalVariables.isArrowshow) {
+            GlobalVariables.isArrowshow = false;
+            GlobalVariables.streatanimationController.stop();
+          }
+          break;
+        default:
+          GlobalVariables.drive_selectedButtonIndex = -1;
+          GlobalVariables.resetColor();
+          SetTxData.Pivot_Rcx = 0;
+          SetTxData.Pivot_Rcy = 0;
+
+          if (GlobalVariables.isArrowshow) {
+            GlobalVariables.isArrowshow = false;
+            GlobalVariables.streatanimationController.stop();
+          }
+          break;
+      }
 
       // Date & Time
       GlobalVariables.nowDateTime = DateTime.now();
@@ -139,8 +223,6 @@ class TimerMonitor {
             GlobalVariables.TargetPort);
         // } else {}
       } else {}
-      // print(
-      //     "${SetTxData.Accel_X} , ${SetTxData.Accel_Y} , ${SetTxData.Accel_Z}, ${SetTxData.Gyro_P} , ${SetTxData.Gyro_R} , ${SetTxData.Gyro_Y}, ${GlobalVariables.roll} , ${GlobalVariables.pitch} , ${GlobalVariables.yaw}, ${SetTxData.Msg2_SBW_Cmd_Tx}");
     });
   }
 

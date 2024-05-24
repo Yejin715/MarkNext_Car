@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:flutter/rendering.dart';
 import 'dart:math';
 
 import './main.dart';
@@ -17,13 +18,7 @@ class TiltView extends StatefulWidget {
 }
 
 class _TiltViewState extends State<TiltView> {
-  final List<String> driveModes = ['P', 'R', 'N', 'D']; // 드라이브 모드 리스트
   double ThrottleBarvalue = 0.0; // 쓰로틀 바의 현재 값
-
-  List<List<Color>> selectColor11x11 = List.generate(
-    11,
-    (i) => List<Color>.filled(11, Colors.transparent),
-  );
 
   @override
   Widget build(BuildContext context) {
@@ -380,9 +375,9 @@ class _TiltViewState extends State<TiltView> {
                                   onTap: () {
                                     setState(() {
                                       if ((row == 5) & (col == 5)) {
-                                        resetColor();
-                                        selectColor11x11[row][col] =
-                                            Colors.green;
+                                        GlobalVariables.resetColor();
+                                        GlobalVariables.selectColor11x11[row]
+                                            [col] = Colors.green;
                                         SetTxData.Button_Pedal = 6;
                                         SetTxData.Pivot_Rcx = 0;
                                         SetTxData.Pivot_Rcy = 0;
@@ -391,19 +386,23 @@ class _TiltViewState extends State<TiltView> {
                                           case 0:
                                           case 10:
                                             if ((col < 2) | (col > 8)) {
-                                              resetColor();
-                                              selectColor11x11[row][col] =
-                                                  Colors.red;
-                                              setPivot(col, row);
+                                              GlobalVariables.resetColor();
+                                              GlobalVariables
+                                                      .selectColor11x11[row]
+                                                  [col] = Colors.red;
+                                              GlobalVariables.setPivot(
+                                                  col, row);
                                             } else {}
                                             break;
                                           case 1:
                                           case 9:
                                             if ((col < 3) | (col > 7)) {
-                                              resetColor();
-                                              selectColor11x11[row][col] =
-                                                  Colors.red;
-                                              setPivot(col, row);
+                                              GlobalVariables.resetColor();
+                                              GlobalVariables
+                                                      .selectColor11x11[row]
+                                                  [col] = Colors.red;
+                                              GlobalVariables.setPivot(
+                                                  col, row);
                                             } else {}
                                             break;
                                           case 2:
@@ -411,21 +410,25 @@ class _TiltViewState extends State<TiltView> {
                                           case 7:
                                           case 8:
                                             if ((col < 4) | (col > 6)) {
-                                              resetColor();
-                                              selectColor11x11[row][col] =
-                                                  Colors.red;
-                                              setPivot(col, row);
+                                              GlobalVariables.resetColor();
+                                              GlobalVariables
+                                                      .selectColor11x11[row]
+                                                  [col] = Colors.red;
+                                              GlobalVariables.setPivot(
+                                                  col, row);
                                             } else {}
                                             break;
                                           case 4:
                                           case 5:
                                           case 6:
                                             if (col != 5) {
-                                              resetColor();
-                                              selectColor11x11[row][col] =
-                                                  Colors.red;
+                                              GlobalVariables.resetColor();
+                                              GlobalVariables
+                                                      .selectColor11x11[row]
+                                                  [col] = Colors.red;
 
-                                              setPivot(col, row);
+                                              GlobalVariables.setPivot(
+                                                  col, row);
                                             } else {}
                                             break;
                                         }
@@ -435,13 +438,138 @@ class _TiltViewState extends State<TiltView> {
                                   child: Container(
                                     height: cellHeight,
                                     decoration: BoxDecoration(
-                                      color: selectColor11x11[row][col],
+                                      color: GlobalVariables
+                                          .selectColor11x11[row][col],
                                       shape: BoxShape.circle,
                                     ),
                                   ),
                                 );
                               },
                             ),
+                            if (GlobalVariables.isArrowVisible &
+                                GlobalVariables.isArrowshow)
+                              Positioned(
+                                left: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
+                                child: ShaderMask(
+                                  shaderCallback: (Rect bounds) {
+                                    return LinearGradient(
+                                      begin: Alignment(
+                                          -1 -
+                                              GlobalVariables
+                                                  .streatanimationController
+                                                  .value,
+                                          0),
+                                      end: Alignment(
+                                          1 -
+                                              GlobalVariables
+                                                  .streatanimationController
+                                                  .value,
+                                          0),
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.white,
+                                        Colors.transparent,
+                                      ],
+                                    ).createShader(bounds);
+                                  },
+                                  blendMode: BlendMode.modulate,
+                                  child: Icon(Icons.navigate_before,
+                                      size: (Size_Width * 0.2)),
+                                ),
+                              )
+                            else if (!GlobalVariables.isArrowVisible &
+                                GlobalVariables.isArrowshow)
+                              Positioned(
+                                right: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
+                                child: ShaderMask(
+                                  shaderCallback: (Rect bounds) {
+                                    return LinearGradient(
+                                      begin: Alignment(
+                                          -1 +
+                                              GlobalVariables
+                                                  .streatanimationController
+                                                  .value,
+                                          0),
+                                      end: Alignment(
+                                          1 +
+                                              GlobalVariables
+                                                  .streatanimationController
+                                                  .value,
+                                          0),
+                                      colors: [
+                                        Colors.transparent,
+                                        Colors.white,
+                                        Colors.transparent,
+                                      ],
+                                    ).createShader(bounds);
+                                  },
+                                  blendMode: BlendMode.modulate,
+                                  child: Icon(Icons.navigate_next,
+                                      size: (Size_Width * 0.2)),
+                                ),
+                              ),
+                            if (GlobalVariables.isRotateVisible &
+                                GlobalVariables.isRotateshow)
+                              AnimatedBuilder(
+                                animation:
+                                    GlobalVariables.rotateanimationController,
+                                builder: (context, child) {
+                                  return Transform.rotate(
+                                    angle: GlobalVariables
+                                            .rotateanimationController.value *
+                                        2.0 *
+                                        pi,
+                                    child: child,
+                                  );
+                                },
+                                child: ShaderMask(
+                                  shaderCallback: (Rect bounds) {
+                                    return LinearGradient(
+                                      colors: [
+                                        Colors.red,
+                                        Colors.blue,
+                                      ],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                    ).createShader(bounds);
+                                  },
+                                  child: Icon(
+                                    Icons.rotate_right,
+                                    size: (Size_Width * 0.2),
+                                  ),
+                                ),
+                              )
+                            else if (!GlobalVariables.isRotateVisible &
+                                GlobalVariables.isRotateshow)
+                              AnimatedBuilder(
+                                animation:
+                                    GlobalVariables.rotateanimationController,
+                                builder: (context, child) {
+                                  return Transform.rotate(
+                                    angle: GlobalVariables
+                                            .rotateanimationController.value *
+                                        -2.0 *
+                                        pi,
+                                    child: child,
+                                  );
+                                },
+                                child: ShaderMask(
+                                  shaderCallback: (Rect bounds) {
+                                    return LinearGradient(
+                                      colors: [
+                                        Colors.blue,
+                                        Colors.red,
+                                      ],
+                                      begin: Alignment.centerLeft,
+                                      end: Alignment.centerRight,
+                                    ).createShader(bounds);
+                                  },
+                                  child: Icon(
+                                    Icons.rotate_left,
+                                    size: (Size_Width * 0.2),
+                                  ),
+                                ),
+                              ),
                           ])),
                       Container(
                         width: (Size_Width / 2),
@@ -496,7 +624,7 @@ class _TiltViewState extends State<TiltView> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     // print('Reset Button Click');
-                                    resetColor();
+                                    GlobalVariables.resetColor();
                                     SetTxData.Pivot_Rcx = 0;
                                     SetTxData.Pivot_Rcy = 0;
                                     SetTxData.Button_Pedal = 12;
@@ -717,10 +845,10 @@ class _TiltViewState extends State<TiltView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: List.generate(
-                        driveModes.length,
+                        GlobalVariables.driveModes.length,
                         (index) {
                           return DriveModeButton(
-                            driveMode: driveModes[index],
+                            driveMode: GlobalVariables.driveModes[index],
                             isSelected: index ==
                                 GlobalVariables.drive_selectedButtonIndex,
                             onPressed: () {
@@ -728,6 +856,7 @@ class _TiltViewState extends State<TiltView> {
                                 GlobalVariables.drive_selectedButtonIndex =
                                     index;
                                 // print('Drive Button Click');
+                                print(index);
                                 SetTxData.Button_Pedal =
                                     GlobalVariables.drive_selectedButtonIndex;
                                 GlobalVariables.isDataSendFlag = true;
@@ -751,19 +880,6 @@ class _TiltViewState extends State<TiltView> {
   double mapValue(
       double value, double inMin, double inMax, double outMin, double outMax) {
     return (value - inMin) * (outMax - outMin) / (inMax - inMin) + outMin;
-  }
-
-  void resetColor() {
-    selectColor11x11 = List.generate(
-      11,
-      (i) => List<Color>.filled(11, Colors.transparent),
-    );
-  }
-
-  void setPivot(int xvalue, int yvalue) {
-    SetTxData.Button_Pedal = 7;
-    SetTxData.Pivot_Rcx = (xvalue - 5);
-    SetTxData.Pivot_Rcy = -(yvalue - 5);
   }
 
   Widget buildWheel({
@@ -853,5 +969,15 @@ class _TiltViewState extends State<TiltView> {
         ),
       ),
     );
+  }
+}
+
+class _SlideGradientTransform extends GradientTransform {
+  final double percent;
+
+  _SlideGradientTransform({required this.percent});
+  @override
+  Matrix4? transform(Rect bounds, {TextDirection? textDirection}) {
+    return Matrix4.translationValues(0, bounds.height * percent, 0);
   }
 }

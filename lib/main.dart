@@ -24,7 +24,7 @@ class Main extends StatefulWidget {
   State<Main> createState() => _Main();
 }
 
-class _Main extends State<Main> {
+class _Main extends State<Main> with TickerProviderStateMixin {
   final List<String> driveModes = ['P', 'R', 'N', 'D']; // 드라이브 모드 리스트
   int selectedButtonIndex = 0; // 선택된 버튼의 인덱스, 초기값은 0
   late TimerMonitor _TimerMonitor;
@@ -55,6 +55,14 @@ class _Main extends State<Main> {
       });
     });
     SensorsPlusValue();
+    GlobalVariables.rotateanimationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(); // 애니메이션 반복
+    GlobalVariables.streatanimationController = AnimationController(
+      duration: const Duration(seconds: 2),
+      vsync: this,
+    )..repeat(); // 애니메이션 반복
   }
 
   void SensorsPlusValue() {
@@ -67,11 +75,39 @@ class _Main extends State<Main> {
         SetTxData.Accel_Z = (event.z).toInt();
         setState(() {
           _accelerometerValues = [event.x, event.y, event.z];
-          double temp = _accelerometerValues[1] * -36;
-          if (temp >= 360) {
-            SetTxData.Msg2_SBW_Cmd_Tx = 359;
-          } else if (temp <= -360) {
-            SetTxData.Msg2_SBW_Cmd_Tx = -359;
+          //yejin table = _accelerometerValues[0], another table = _accelerometerValues[1]
+          double temp = _accelerometerValues[1] * -30;
+          double tilt_angle = _accelerometerValues[1] * -9;
+          if (SetTxData.Button_Pedal == 6) {
+            if (tilt_angle >= 15) {
+              GlobalVariables.isRotateVisible = true;
+              if (!GlobalVariables.isRotateshow) {
+                GlobalVariables.isRotateshow = true;
+                GlobalVariables.rotateanimationController.repeat();
+              }
+            } else if (tilt_angle <= -15) {
+              GlobalVariables.isRotateVisible = false;
+              if (!GlobalVariables.isRotateshow) {
+                GlobalVariables.isRotateshow = true;
+                GlobalVariables.rotateanimationController.repeat();
+              }
+            } else {
+              if (GlobalVariables.isRotateshow) {
+                GlobalVariables.isRotateshow = false;
+                GlobalVariables.rotateanimationController.stop();
+              }
+            }
+          } else {
+            if (GlobalVariables.isRotateshow) {
+              GlobalVariables.isRotateshow = false;
+              GlobalVariables.rotateanimationController.stop();
+            }
+          }
+
+          if (temp >= 300) {
+            SetTxData.Msg2_SBW_Cmd_Tx = 300;
+          } else if (temp <= -300) {
+            SetTxData.Msg2_SBW_Cmd_Tx = -300;
           } else {
             SetTxData.Msg2_SBW_Cmd_Tx = temp.toInt();
           }
@@ -89,18 +125,27 @@ class _Main extends State<Main> {
       SetTxData.Gyro_Y = (event.z / 0.01).toInt();
       setState(() {
         _gyroValues = [event.x, event.y, event.z];
+
         if (!GlobalVariables.isControlSelect) {
-          if (_gyroValues[0] > 2.5) {
+          if ((_gyroValues[0] > GlobalVariables.LeftCrab_Threshold)) {
             SetTxData.Button_Pedal = 4;
-            // GlobalVariables.drive_selectedButtonIndex = 0;
-          } else if (_gyroValues[0] < -2.5) {
+            GlobalVariables.isArrowVisible = true;
+            if (!GlobalVariables.isArrowshow) {
+              GlobalVariables.isArrowshow = true;
+              GlobalVariables.streatanimationController.repeat();
+            }
+          } else if ((_gyroValues[0] < GlobalVariables.RightCrab_Threshold)) {
             SetTxData.Button_Pedal = 5;
+            GlobalVariables.isArrowVisible = false;
+            if (!GlobalVariables.isArrowshow) {
+              GlobalVariables.isArrowshow = true;
+              GlobalVariables.streatanimationController.repeat();
+            }
           } else {}
 
-          if (_gyroValues[1] > 4.5) {
+          if (_gyroValues[1] > GlobalVariables.FWSCrab_Threshold) {
             SetTxData.Button_Pedal = 10;
-            // GlobalVariables.drive_selectedButtonIndex = 0;
-          } else if (_gyroValues[1] < -4.5) {
+          } else if (_gyroValues[1] < GlobalVariables.D4Crab_Threshold) {
             SetTxData.Button_Pedal = 11;
           } else {}
         }
