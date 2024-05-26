@@ -75,6 +75,19 @@ class GlobalVariables {
   static double FWSCrab_Threshold = 4.5;
   static double D4Crab_Threshold = -4.5;
 
+  static TextEditingController leftcrabthresholdController =
+      TextEditingController(
+          text: (GlobalVariables.LeftCrab_Threshold).toString());
+  static TextEditingController rightcrabthresholdController =
+      TextEditingController(
+          text: (GlobalVariables.RightCrab_Threshold).toString());
+  static TextEditingController fwscrabthresholdController =
+      TextEditingController(
+          text: (GlobalVariables.FWSCrab_Threshold).toString());
+  static TextEditingController d4crabthresholdController =
+      TextEditingController(
+          text: (GlobalVariables.D4Crab_Threshold).toString());
+
   static List<List<Color>> selectColor11x11 = List.generate(
     11,
     (i) => List<Color>.filled(11, Colors.transparent),
@@ -95,8 +108,8 @@ class GlobalVariables {
     "D4",
     "Reset"
   ];
-  // static List<int> TxData = List<int>.filled(15, 0);
-  static List<int> TxData = List<int>.filled(27, 0);
+  static List<int> TxData = List<int>.filled(15, 0);
+  // static List<int> TxData = List<int>.filled(27, 0);
   static List<int> RxData = List<int>.filled(38, 0);
 
   static void resetColor() {
@@ -213,15 +226,12 @@ class TimerMonitor {
       GlobalVariables.nowDateTime = DateTime.now();
       if (GlobalVariables.isUDPConnected) {
         udp.bind(GlobalVariables.PADIp, GlobalVariables.PADPort);
-        // if (GlobalVariables.isDataSendFlag) {
-        // udp.setTarget(GlobalVariables.TargetIp, GlobalVariables.TargetPort);
         udp.send(
             GlobalVariables.TxData,
             GlobalVariables.PADIp,
             GlobalVariables.PADPort,
             GlobalVariables.TargetIp,
             GlobalVariables.TargetPort);
-        // } else {}
       } else {}
     });
   }

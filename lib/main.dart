@@ -8,6 +8,7 @@ import 'dart:ui';
 import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './global.dart';
 import './TiltView.dart';
@@ -39,9 +40,10 @@ class _Main extends State<Main> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
+    _loadThresholdValues();
     Wakelock.enable();
-    // GlobalVariables.TxData = List<int>.filled(15, 0);
-    GlobalVariables.TxData = List<int>.filled(27, 0);
+    GlobalVariables.TxData = List<int>.filled(15, 0);
+    // GlobalVariables.TxData = List<int>.filled(27, 0);
     GlobalVariables.RxData = List<int>.filled(38, 0);
     // GlobalVariables.initializePADIp().then((_) {
     //   // 이 시점에서 PADIp가 설정되었으므로 사용 가능
@@ -65,6 +67,29 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     )..repeat(); // 애니메이션 반복
   }
 
+  _loadThresholdValues() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    setState(() {
+      GlobalVariables.LeftCrab_Threshold =
+          prefs.getDouble('LeftCrab_Threshold') ?? 2.5;
+      GlobalVariables.RightCrab_Threshold =
+          prefs.getDouble('RightCrab_Threshold') ?? -2.5;
+      GlobalVariables.FWSCrab_Threshold =
+          prefs.getDouble('FWSCrab_Threshold') ?? 4.5;
+      GlobalVariables.D4Crab_Threshold =
+          prefs.getDouble('D4Crab_Threshold') ?? -4.5;
+
+      GlobalVariables.leftcrabthresholdController.text =
+          (GlobalVariables.LeftCrab_Threshold).toString();
+      GlobalVariables.rightcrabthresholdController.text =
+          (GlobalVariables.RightCrab_Threshold).toString();
+      GlobalVariables.fwscrabthresholdController.text =
+          (GlobalVariables.FWSCrab_Threshold).toString();
+      GlobalVariables.d4crabthresholdController.text =
+          (GlobalVariables.D4Crab_Threshold).toString();
+    });
+  }
+
   void SensorsPlusValue() {
     // 중력을 반영하지 않은 순수 사용자의 힘에 의한 가속도계 값
     accelerometerEventStream(samplingPeriod: SensorInterval.gameInterval)
@@ -80,13 +105,13 @@ class _Main extends State<Main> with TickerProviderStateMixin {
           double tilt_angle = _accelerometerValues[1] * -9;
           if (SetTxData.Button_Pedal == 6) {
             if (tilt_angle >= 15) {
-              GlobalVariables.isRotateVisible = true;
+              GlobalVariables.isRotateVisible = false;
               if (!GlobalVariables.isRotateshow) {
                 GlobalVariables.isRotateshow = true;
                 GlobalVariables.rotateanimationController.repeat();
               }
             } else if (tilt_angle <= -15) {
-              GlobalVariables.isRotateVisible = false;
+              GlobalVariables.isRotateVisible = true;
               if (!GlobalVariables.isRotateshow) {
                 GlobalVariables.isRotateshow = true;
                 GlobalVariables.rotateanimationController.repeat();
@@ -128,6 +153,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
 
         if (!GlobalVariables.isControlSelect) {
           if ((_gyroValues[0] > GlobalVariables.LeftCrab_Threshold)) {
+            print(_gyroValues[0]);
             SetTxData.Button_Pedal = 4;
             GlobalVariables.isArrowVisible = true;
             if (!GlobalVariables.isArrowshow) {
@@ -135,6 +161,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
               GlobalVariables.streatanimationController.repeat();
             }
           } else if ((_gyroValues[0] < GlobalVariables.RightCrab_Threshold)) {
+            print(_gyroValues[0]);
             SetTxData.Button_Pedal = 5;
             GlobalVariables.isArrowVisible = false;
             if (!GlobalVariables.isArrowshow) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import './global.dart';
 import './UDP.dart';
@@ -33,17 +34,10 @@ class _SettingViewState extends State<SettingView> {
         : '',
   );
 
-  final TextEditingController leftcrabthresholdController =
-      TextEditingController(
-          text: (GlobalVariables.LeftCrab_Threshold).toString());
-  final TextEditingController rightcrabthresholdController =
-      TextEditingController(
-          text: (GlobalVariables.RightCrab_Threshold).toString());
-  final TextEditingController fwscrabthresholdController =
-      TextEditingController(
-          text: (GlobalVariables.FWSCrab_Threshold).toString());
-  final TextEditingController d4crabthresholdController = TextEditingController(
-      text: (GlobalVariables.D4Crab_Threshold).toString());
+  _saveThresholdValue(String key, double value) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setDouble(key, value);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -370,7 +364,7 @@ class _SettingViewState extends State<SettingView> {
                       fontSize: (Size_Width * 0.015),
                       color: Color(0xFF2A2A2A)),
                   keyboardType: TextInputType.number,
-                  controller: leftcrabthresholdController,
+                  controller: GlobalVariables.leftcrabthresholdController,
                 ),
               ),
               Container(
@@ -400,7 +394,7 @@ class _SettingViewState extends State<SettingView> {
                       fontSize: (Size_Width * 0.015),
                       color: Color(0xFF2A2A2A)),
                   keyboardType: TextInputType.number,
-                  controller: rightcrabthresholdController,
+                  controller: GlobalVariables.rightcrabthresholdController,
                 ),
               ),
               Container(
@@ -430,7 +424,7 @@ class _SettingViewState extends State<SettingView> {
                       fontSize: (Size_Width * 0.015),
                       color: Color(0xFF2A2A2A)),
                   keyboardType: TextInputType.number,
-                  controller: fwscrabthresholdController,
+                  controller: GlobalVariables.fwscrabthresholdController,
                 ),
               ),
               Container(
@@ -460,7 +454,7 @@ class _SettingViewState extends State<SettingView> {
                       fontSize: (Size_Width * 0.015),
                       color: Color(0xFF2A2A2A)),
                   keyboardType: TextInputType.number,
-                  controller: d4crabthresholdController,
+                  controller: GlobalVariables.d4crabthresholdController,
                 ),
               ),
               Container(
@@ -473,18 +467,30 @@ class _SettingViewState extends State<SettingView> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
-                        GlobalVariables.LeftCrab_Threshold =
-                            double.tryParse(leftcrabthresholdController.text) ??
-                                2.5;
+                        GlobalVariables.LeftCrab_Threshold = double.tryParse(
+                                GlobalVariables
+                                    .leftcrabthresholdController.text) ??
+                            2.5;
                         GlobalVariables.RightCrab_Threshold = double.tryParse(
-                                rightcrabthresholdController.text) ??
+                                GlobalVariables
+                                    .rightcrabthresholdController.text) ??
                             -2.5;
-                        GlobalVariables.FWSCrab_Threshold =
-                            double.tryParse(fwscrabthresholdController.text) ??
-                                4.5;
-                        GlobalVariables.D4Crab_Threshold =
-                            double.tryParse(d4crabthresholdController.text) ??
-                                -4.5;
+                        GlobalVariables.FWSCrab_Threshold = double.tryParse(
+                                GlobalVariables
+                                    .fwscrabthresholdController.text) ??
+                            4.5;
+                        GlobalVariables.D4Crab_Threshold = double.tryParse(
+                                GlobalVariables
+                                    .d4crabthresholdController.text) ??
+                            -4.5;
+                        _saveThresholdValue('LeftCrab_Threshold',
+                            GlobalVariables.LeftCrab_Threshold);
+                        _saveThresholdValue('RightCrab_Threshold',
+                            GlobalVariables.RightCrab_Threshold);
+                        _saveThresholdValue('FWSCrab_Threshold',
+                            GlobalVariables.FWSCrab_Threshold);
+                        _saveThresholdValue('D4Crab_Threshold',
+                            GlobalVariables.D4Crab_Threshold);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF748FC2), // 버튼 색상

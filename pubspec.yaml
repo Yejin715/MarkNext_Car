@@ -38,6 +38,7 @@ dependencies:
   wakelock: ^0.6.2
   sensors_plus: ^5.0.1
   flutter_speed_dial: ^7.0.0
+  shared_preferences: ^2.2.3
 
 dev_dependencies:
   flutter_test:
