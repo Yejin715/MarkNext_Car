@@ -9,6 +9,7 @@ import './main.dart';
 import './DriveModeButton.dart';
 import './SettingView.dart';
 import './global.dart';
+import './LinePainter.dart';
 
 class TiltView extends StatefulWidget {
   const TiltView({super.key});
@@ -24,7 +25,6 @@ class _TiltViewState extends State<TiltView> {
   Widget build(BuildContext context) {
     final Size_Height = MediaQuery.of(context).size.height;
     final Size_Width = MediaQuery.of(context).size.width;
-    final cellWidth = (Size_Width / 2) / 11;
     final cellHeight = ((Size_Height * 0.6) - 5) / 11;
 
     return Column(
@@ -361,90 +361,85 @@ class _TiltViewState extends State<TiltView> {
                                 );
                               },
                             ),
-                            GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 11,
-                              ),
-                              itemCount: 11 * 11,
-                              itemBuilder: (context, index) {
-                                int row = index ~/ 11;
-                                int col = index % 11;
-
-                                return GestureDetector(
-                                  onTap: () {
-                                    setState(() {
-                                      if ((row == 5) & (col == 5)) {
-                                        GlobalVariables.resetColor();
-                                        GlobalVariables.selectColor11x11[row]
-                                            [col] = Colors.green;
-                                        SetTxData.Button_Pedal = 6;
-                                        SetTxData.Pivot_Rcx = 0;
-                                        SetTxData.Pivot_Rcy = 0;
-                                      } else {
-                                        switch (row) {
-                                          case 0:
-                                          case 10:
-                                            if ((col < 2) | (col > 8)) {
-                                              GlobalVariables.resetColor();
-                                              GlobalVariables
-                                                      .selectColor11x11[row]
-                                                  [col] = Colors.red;
-                                              GlobalVariables.setPivot(
-                                                  col, row);
-                                            } else {}
-                                            break;
-                                          case 1:
-                                          case 9:
-                                            if ((col < 3) | (col > 7)) {
-                                              GlobalVariables.resetColor();
-                                              GlobalVariables
-                                                      .selectColor11x11[row]
-                                                  [col] = Colors.red;
-                                              GlobalVariables.setPivot(
-                                                  col, row);
-                                            } else {}
-                                            break;
-                                          case 2:
-                                          case 3:
-                                          case 7:
-                                          case 8:
-                                            if ((col < 4) | (col > 6)) {
-                                              GlobalVariables.resetColor();
-                                              GlobalVariables
-                                                      .selectColor11x11[row]
-                                                  [col] = Colors.red;
-                                              GlobalVariables.setPivot(
-                                                  col, row);
-                                            } else {}
-                                            break;
-                                          case 4:
-                                          case 5:
-                                          case 6:
-                                            if (col != 5) {
-                                              GlobalVariables.resetColor();
-                                              GlobalVariables
-                                                      .selectColor11x11[row]
-                                                  [col] = Colors.red;
-
-                                              GlobalVariables.setPivot(
-                                                  col, row);
-                                            } else {}
-                                            break;
-                                        }
-                                      }
-                                    });
-                                  },
-                                  child: Container(
-                                    height: cellHeight,
-                                    decoration: BoxDecoration(
-                                      color: GlobalVariables
-                                          .selectColor11x11[row][col],
-                                      shape: BoxShape.circle,
-                                    ),
+                            ClipRect(
+                              // Overflow 속성 사용
+                              child: CustomPaint(
+                                foregroundPainter:
+                                    LinePainter(GraphicVariables.circlepoint),
+                                child: GridView.builder(
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                    crossAxisCount: 11,
                                   ),
-                                );
-                              },
+                                  itemCount: 11 * 11,
+                                  itemBuilder: (context, index) {
+                                    int row = index ~/ 11;
+                                    int col = index % 11;
+
+                                    return GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          if ((row == 5) & (col == 5)) {
+                                            GlobalVariables.resetColor();
+                                            GlobalVariables
+                                                    .selectColor11x11[row]
+                                                [col] = Colors.green;
+                                            SetTxData.Button_Pedal = 6;
+                                            SetTxData.Pivot_Rcx = 0;
+                                            SetTxData.Pivot_Rcy = 0;
+                                          } else {
+                                            switch (row) {
+                                              case 0:
+                                              case 10:
+                                                if ((col < 2) | (col > 8)) {
+                                                  GlobalVariables.resetColor();
+                                                  GlobalVariables.setPivot(
+                                                      col, row, cellHeight);
+                                                } else {}
+                                                break;
+                                              case 1:
+                                              case 9:
+                                                if ((col < 3) | (col > 7)) {
+                                                  GlobalVariables.resetColor();
+                                                  GlobalVariables.setPivot(
+                                                      col, row, cellHeight);
+                                                } else {}
+                                                break;
+                                              case 2:
+                                              case 3:
+                                              case 7:
+                                              case 8:
+                                                if ((col < 4) | (col > 6)) {
+                                                  GlobalVariables.resetColor();
+                                                  GlobalVariables.setPivot(
+                                                      col, row, cellHeight);
+                                                } else {}
+                                                break;
+                                              case 4:
+                                              case 5:
+                                              case 6:
+                                                if (col != 5) {
+                                                  GlobalVariables.resetColor();
+                                                  GlobalVariables.setPivot(
+                                                      col, row, cellHeight);
+                                                } else {}
+                                                break;
+                                            }
+                                          }
+                                        });
+                                      },
+                                      child: Container(
+                                        height: cellHeight,
+                                        decoration: BoxDecoration(
+                                          color: GlobalVariables
+                                              .selectColor11x11[row][col],
+                                          shape: BoxShape.circle,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
                             ),
                             if (GlobalVariables.isArrowVisible &
                                 GlobalVariables.isArrowshow)

@@ -615,6 +615,15 @@ class _SettingViewState extends State<SettingView> {
                       },
                       onRightToggleActive: () {
                         // print('Phone Tilt activated');
+                        GlobalVariables.drive_selectedButtonIndex = -1;
+                        GlobalVariables.resetColor();
+                        SetTxData.Pivot_Rcx = 0;
+                        SetTxData.Pivot_Rcy = 0;
+
+                        if (GlobalVariables.isArrowshow) {
+                          GlobalVariables.isArrowshow = false;
+                          GlobalVariables.streatanimationController.stop();
+                        }
                       },
                     ),
                   ),
@@ -664,72 +673,4 @@ class _SettingViewState extends State<SettingView> {
       },
     );
   }
-  // void _showInputModal(BuildContext context, int index) {
-  //   TextEditingController controller;
-  //   String label;
-  //   double value;
-  //   FocusNode focusNode;
-
-  //   switch (index) {
-  //     case 1:
-  //       controller = GlobalVariables.d4crabthresholdController;
-  //       label = 'Threshold 1';
-  //       value = GlobalVariables.D4Crab_Threshold;
-  //       focusNode = threshold1FocusNode;
-  //       break;
-  //     case 2:
-  //       controller = GlobalVariables.d4crabthresholdController;
-  //       label = 'Threshold 2';
-  //       value = GlobalVariables.D4Crab_Threshold;
-  //       focusNode = threshold1FocusNode;
-  //       break;
-  //     case 3:
-  //       controller = GlobalVariables.d4crabthresholdController;
-  //       label = 'Threshold 3';
-  //       value = GlobalVariables.D4Crab_Threshold;
-  //       focusNode = threshold1FocusNode;
-  //       break;
-  //     case 4:
-  //       controller = GlobalVariables.d4crabthresholdController;
-  //       label = 'Threshold 4';
-  //       value = GlobalVariables.D4Crab_Threshold;
-  //       focusNode = threshold1FocusNode;
-  //       break;
-  //     default:
-  //       return;
-  //   }
-
-  //   showModalBottomSheet(
-  //     context: context,
-  //     isScrollControlled: true,
-  //     builder: (BuildContext context) {
-  //       WidgetsBinding.instance.addPostFrameCallback((_) {
-  //         FocusScope.of(context).requestFocus(focusNode);
-  //       });
-
-  //       return Padding(
-  //         padding: EdgeInsets.only(
-  //           bottom: MediaQuery.of(context).viewInsets.bottom,
-  //         ),
-  //         child: Column(
-  //           mainAxisSize: MainAxisSize.min,
-  //           children: <Widget>[
-  //             Padding(
-  //               padding: const EdgeInsets.all(16.0),
-  //               child: TextField(
-  //                 controller: controller,
-  //                 focusNode: focusNode,
-  //                 keyboardType: TextInputType.number,
-  //                 decoration: InputDecoration(labelText: label),
-  //                 onSubmitted: (value) {
-  //                   Navigator.pop(context);
-  //                 },
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 }

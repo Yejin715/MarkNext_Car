@@ -45,6 +45,10 @@ class SetRxData {
   static int Battery_Soc = 0;
 }
 
+class GraphicVariables {
+  static Offset? circlepoint = null;
+}
+
 class GlobalVariables {
   static bool isRotateVisible = false;
   static bool isRotateshow = false;
@@ -117,12 +121,16 @@ class GlobalVariables {
       11,
       (i) => List<Color>.filled(11, Colors.transparent),
     );
+    GraphicVariables.circlepoint = null;
   }
 
-  static void setPivot(int xvalue, int yvalue) {
+  static void setPivot(int xvalue, int yvalue, double height) {
+    GlobalVariables.selectColor11x11[yvalue][xvalue] = Colors.red;
     SetTxData.Button_Pedal = 7;
     SetTxData.Pivot_Rcx = (xvalue - 5);
     SetTxData.Pivot_Rcy = -(yvalue - 5);
+    GraphicVariables.circlepoint = Offset(
+        (xvalue * height) + (height / 2), (yvalue * height) + (height / 2));
   }
 
   static Future<String> getIpAddress() async {
