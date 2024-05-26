@@ -19,9 +19,9 @@ class UDP {
           if (event == RawSocketEvent.read) {
             Datagram? datagram = _socket.receive();
             if (datagram != null) {
-              GlobalVariables.RxData = datagram.data;
-              // print(GlobalVariables.RxData);
-              RxData_Check(GlobalVariables.RxData);
+              SetRxData.RxData = datagram.data;
+              // print(SetRxData.RxData);
+              RxData_Check(SetRxData.RxData);
             }
             _socket.close();
           }
@@ -53,7 +53,6 @@ class UDP {
         if (_socket != null) {
           _socket.send(message, _targetAddress, _targetPort);
         } else {}
-        GlobalVariables.isDataSendFlag = false;
         // print('Sent: $message');
       } else {
         // print('Target address and port not set.');

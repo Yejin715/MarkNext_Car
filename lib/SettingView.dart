@@ -289,7 +289,7 @@ class _SettingViewState extends State<SettingView> {
                               // udp.setTarget(GlobalVariables.TargetIp,
                               //     GlobalVariables.TargetPort);
                               udp.send(
-                                  GlobalVariables.TxData,
+                                  SetTxData.TxData,
                                   GlobalVariables.PADIp,
                                   GlobalVariables.PADPort,
                                   GlobalVariables.TargetIp,
@@ -611,18 +611,17 @@ class _SettingViewState extends State<SettingView> {
                       onLeftToggleActive: () {
                         // print('Joystick activated');
                         SetTxData.Button_Pedal = 13;
-                        GlobalVariables.isDataSendFlag = true;
                       },
                       onRightToggleActive: () {
                         // print('Phone Tilt activated');
-                        GlobalVariables.drive_selectedButtonIndex = -1;
-                        GlobalVariables.resetColor();
+                        AnimationVariables.drive_selectedButtonIndex = -1;
+                        GraphicVariables.resetColor();
                         SetTxData.Pivot_Rcx = 0;
                         SetTxData.Pivot_Rcy = 0;
 
-                        if (GlobalVariables.isArrowshow) {
-                          GlobalVariables.isArrowshow = false;
-                          GlobalVariables.streatanimationController.stop();
+                        if (AnimationVariables.isArrowshow) {
+                          AnimationVariables.isArrowshow = false;
+                          AnimationVariables.streatanimationController.stop();
                         }
                       },
                     ),

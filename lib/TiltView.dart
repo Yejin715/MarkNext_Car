@@ -49,7 +49,8 @@ class _TiltViewState extends State<TiltView> {
                   child: GestureDetector(
                     onVerticalDragUpdate: (details) {
                       setState(() {
-                        GlobalVariables.isScrollDragging = true; // 드래그 중임을 나타냄
+                        AnimationVariables.isScrollDragging =
+                            true; // 드래그 중임을 나타냄
                         // 드래그 위치에 따라 새 값 계산
                         double newValue = ThrottleBarvalue -
                             details.primaryDelta!; // 감도 조절 가능
@@ -59,17 +60,15 @@ class _TiltViewState extends State<TiltView> {
                         SetTxData.Accel_Pedal_Angle = mapValue(ThrottleBarvalue,
                                 0, (Size_Height * 0.56), 0, 100)
                             .toInt();
-                        GlobalVariables.isDataSendFlag = true;
                       });
                     },
                     onVerticalDragEnd: (details) {
                       setState(() {
-                        GlobalVariables.isScrollDragging = false; // 드래그 종료됨
+                        AnimationVariables.isScrollDragging = false; // 드래그 종료됨
                         ThrottleBarvalue = 0;
                         SetTxData.Accel_Pedal_Angle = mapValue(ThrottleBarvalue,
                                 0, (Size_Height * 0.56), 0, 100)
                             .toInt();
-                        GlobalVariables.isDataSendFlag = true;
                       });
                     },
                     child: Container(
@@ -380,8 +379,8 @@ class _TiltViewState extends State<TiltView> {
                                       onTap: () {
                                         setState(() {
                                           if ((row == 5) & (col == 5)) {
-                                            GlobalVariables.resetColor();
-                                            GlobalVariables
+                                            GraphicVariables.resetColor();
+                                            GraphicVariables
                                                     .selectColor11x11[row]
                                                 [col] = Colors.green;
                                             SetTxData.Button_Pedal = 6;
@@ -392,16 +391,16 @@ class _TiltViewState extends State<TiltView> {
                                               case 0:
                                               case 10:
                                                 if ((col < 2) | (col > 8)) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
                                               case 1:
                                               case 9:
                                                 if ((col < 3) | (col > 7)) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
@@ -410,8 +409,8 @@ class _TiltViewState extends State<TiltView> {
                                               case 7:
                                               case 8:
                                                 if ((col < 4) | (col > 6)) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
@@ -419,8 +418,8 @@ class _TiltViewState extends State<TiltView> {
                                               case 5:
                                               case 6:
                                                 if (col != 5) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
@@ -431,7 +430,7 @@ class _TiltViewState extends State<TiltView> {
                                       child: Container(
                                         height: cellHeight,
                                         decoration: BoxDecoration(
-                                          color: GlobalVariables
+                                          color: GraphicVariables
                                               .selectColor11x11[row][col],
                                           shape: BoxShape.circle,
                                         ),
@@ -441,8 +440,8 @@ class _TiltViewState extends State<TiltView> {
                                 ),
                               ),
                             ),
-                            if (GlobalVariables.isArrowVisible &
-                                GlobalVariables.isArrowshow)
+                            if (AnimationVariables.isArrowVisible &
+                                AnimationVariables.isArrowshow)
                               Positioned(
                                 left: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
                                 child: ShaderMask(
@@ -450,13 +449,13 @@ class _TiltViewState extends State<TiltView> {
                                     return LinearGradient(
                                       begin: Alignment(
                                           -1 -
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
                                       end: Alignment(
                                           1 -
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
@@ -472,8 +471,8 @@ class _TiltViewState extends State<TiltView> {
                                       size: (Size_Width * 0.2)),
                                 ),
                               )
-                            else if (!GlobalVariables.isArrowVisible &
-                                GlobalVariables.isArrowshow)
+                            else if (!AnimationVariables.isArrowVisible &
+                                AnimationVariables.isArrowshow)
                               Positioned(
                                 right: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
                                 child: ShaderMask(
@@ -481,13 +480,13 @@ class _TiltViewState extends State<TiltView> {
                                     return LinearGradient(
                                       begin: Alignment(
                                           -1 +
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
                                       end: Alignment(
                                           1 +
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
@@ -503,14 +502,14 @@ class _TiltViewState extends State<TiltView> {
                                       size: (Size_Width * 0.2)),
                                 ),
                               ),
-                            if (GlobalVariables.isRotateVisible &
-                                GlobalVariables.isRotateshow)
+                            if (AnimationVariables.isRotateVisible &
+                                AnimationVariables.isRotateshow)
                               AnimatedBuilder(
-                                animation:
-                                    GlobalVariables.rotateanimationController,
+                                animation: AnimationVariables
+                                    .rotateanimationController,
                                 builder: (context, child) {
                                   return Transform.rotate(
-                                    angle: GlobalVariables
+                                    angle: AnimationVariables
                                             .rotateanimationController.value *
                                         2.0 *
                                         pi,
@@ -534,14 +533,14 @@ class _TiltViewState extends State<TiltView> {
                                   ),
                                 ),
                               )
-                            else if (!GlobalVariables.isRotateVisible &
-                                GlobalVariables.isRotateshow)
+                            else if (!AnimationVariables.isRotateVisible &
+                                AnimationVariables.isRotateshow)
                               AnimatedBuilder(
-                                animation:
-                                    GlobalVariables.rotateanimationController,
+                                animation: AnimationVariables
+                                    .rotateanimationController,
                                 builder: (context, child) {
                                   return Transform.rotate(
-                                    angle: GlobalVariables
+                                    angle: AnimationVariables
                                             .rotateanimationController.value *
                                         -2.0 *
                                         pi,
@@ -619,11 +618,10 @@ class _TiltViewState extends State<TiltView> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     // print('Reset Button Click');
-                                    GlobalVariables.resetColor();
+                                    GraphicVariables.resetColor();
                                     SetTxData.Pivot_Rcx = 0;
                                     SetTxData.Pivot_Rcy = 0;
                                     SetTxData.Button_Pedal = 12;
-                                    GlobalVariables.isDataSendFlag = true;
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF212121), // 버튼 색상
@@ -840,21 +838,20 @@ class _TiltViewState extends State<TiltView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: List.generate(
-                        GlobalVariables.driveModes.length,
+                        AnimationVariables.driveModes.length,
                         (index) {
                           return DriveModeButton(
-                            driveMode: GlobalVariables.driveModes[index],
+                            driveMode: AnimationVariables.driveModes[index],
                             isSelected: index ==
-                                GlobalVariables.drive_selectedButtonIndex,
+                                AnimationVariables.drive_selectedButtonIndex,
                             onPressed: () {
                               setState(() {
-                                GlobalVariables.drive_selectedButtonIndex =
+                                AnimationVariables.drive_selectedButtonIndex =
                                     index;
                                 // print('Drive Button Click');
                                 print(index);
-                                SetTxData.Button_Pedal =
-                                    GlobalVariables.drive_selectedButtonIndex;
-                                GlobalVariables.isDataSendFlag = true;
+                                SetTxData.Button_Pedal = AnimationVariables
+                                    .drive_selectedButtonIndex;
                               });
                             },
                           );

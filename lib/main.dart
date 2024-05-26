@@ -42,13 +42,9 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
     _loadThresholdValues();
     Wakelock.enable();
-    GlobalVariables.TxData = List<int>.filled(15, 0);
-    // GlobalVariables.TxData = List<int>.filled(27, 0);
-    GlobalVariables.RxData = List<int>.filled(38, 0);
-    // GlobalVariables.initializePADIp().then((_) {
-    //   // 이 시점에서 PADIp가 설정되었으므로 사용 가능
-    //   // print('PAD IP Address: ${GlobalVariables.PADIp}');
-    // });
+    SetTxData.TxData = List<int>.filled(15, 0);
+    // SetTxData.TxData = List<int>.filled(27, 0);
+    SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();
     _TimerMonitor.wifiStream.listen((isConnected) {
@@ -57,11 +53,11 @@ class _Main extends State<Main> with TickerProviderStateMixin {
       });
     });
     SensorsPlusValue();
-    GlobalVariables.rotateanimationController = AnimationController(
+    AnimationVariables.rotateanimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(); // 애니메이션 반복
-    GlobalVariables.streatanimationController = AnimationController(
+    AnimationVariables.streatanimationController = AnimationController(
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(); // 애니메이션 반복
@@ -103,29 +99,29 @@ class _Main extends State<Main> with TickerProviderStateMixin {
           //yejin table = _accelerometerValues[0], another table = _accelerometerValues[1]
           double temp = _accelerometerValues[1] * -30;
           double tilt_angle = _accelerometerValues[1] * -9;
-          if (SetTxData.Button_Pedal == 6) {
+          if ((SetTxData.Button_Pedal == 6) & (GlobalVariables.showContainer)) {
             if (tilt_angle >= 15) {
-              GlobalVariables.isRotateVisible = false;
-              if (!GlobalVariables.isRotateshow) {
-                GlobalVariables.isRotateshow = true;
-                GlobalVariables.rotateanimationController.repeat();
+              AnimationVariables.isRotateVisible = false;
+              if (!AnimationVariables.isRotateshow) {
+                AnimationVariables.isRotateshow = true;
+                AnimationVariables.rotateanimationController.repeat();
               }
             } else if (tilt_angle <= -15) {
-              GlobalVariables.isRotateVisible = true;
-              if (!GlobalVariables.isRotateshow) {
-                GlobalVariables.isRotateshow = true;
-                GlobalVariables.rotateanimationController.repeat();
+              AnimationVariables.isRotateVisible = true;
+              if (!AnimationVariables.isRotateshow) {
+                AnimationVariables.isRotateshow = true;
+                AnimationVariables.rotateanimationController.repeat();
               }
             } else {
-              if (GlobalVariables.isRotateshow) {
-                GlobalVariables.isRotateshow = false;
-                GlobalVariables.rotateanimationController.stop();
+              if (AnimationVariables.isRotateshow) {
+                AnimationVariables.isRotateshow = false;
+                AnimationVariables.rotateanimationController.stop();
               }
             }
           } else {
-            if (GlobalVariables.isRotateshow) {
-              GlobalVariables.isRotateshow = false;
-              GlobalVariables.rotateanimationController.stop();
+            if (AnimationVariables.isRotateshow) {
+              AnimationVariables.isRotateshow = false;
+              AnimationVariables.rotateanimationController.stop();
             }
           }
 
@@ -151,22 +147,23 @@ class _Main extends State<Main> with TickerProviderStateMixin {
       setState(() {
         _gyroValues = [event.x, event.y, event.z];
 
-        if (!GlobalVariables.isControlSelect) {
+        if ((!AnimationVariables.isControlSelect) &
+            (GlobalVariables.showContainer)) {
           if ((_gyroValues[0] > GlobalVariables.LeftCrab_Threshold)) {
             print(_gyroValues[0]);
             SetTxData.Button_Pedal = 4;
-            GlobalVariables.isArrowVisible = true;
-            if (!GlobalVariables.isArrowshow) {
-              GlobalVariables.isArrowshow = true;
-              GlobalVariables.streatanimationController.repeat();
+            AnimationVariables.isArrowVisible = true;
+            if (!AnimationVariables.isArrowshow) {
+              AnimationVariables.isArrowshow = true;
+              AnimationVariables.streatanimationController.repeat();
             }
           } else if ((_gyroValues[0] < GlobalVariables.RightCrab_Threshold)) {
             print(_gyroValues[0]);
             SetTxData.Button_Pedal = 5;
-            GlobalVariables.isArrowVisible = false;
-            if (!GlobalVariables.isArrowshow) {
-              GlobalVariables.isArrowshow = true;
-              GlobalVariables.streatanimationController.repeat();
+            AnimationVariables.isArrowVisible = false;
+            if (!AnimationVariables.isArrowshow) {
+              AnimationVariables.isArrowshow = true;
+              AnimationVariables.streatanimationController.repeat();
             }
           } else {}
 
@@ -294,11 +291,6 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                                     GlobalVariables.showContainer =
                                         !GlobalVariables.showContainer;
                                   });
-                                  // Navigator.push(
-                                  //   context,
-                                  //   MaterialPageRoute(
-                                  //       builder: (context) => SettingView()),
-                                  // );
                                 },
                               ),
                             ),
@@ -310,7 +302,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                   Container(
                     height: (Size_Height * 0.9),
                     child: GlobalVariables.showContainer
-                        ? (GlobalVariables.isControlSelect
+                        ? (AnimationVariables.isControlSelect
                             ? JoystickView()
                             : TiltView())
                         : SettingView(),

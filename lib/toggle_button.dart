@@ -51,7 +51,7 @@ class _ToggleButtonState extends State<ToggleButton> {
   @override
   void initState() {
     super.initState();
-    if (GlobalVariables.isControlSelect) {
+    if (AnimationVariables.isControlSelect) {
       _toggleXAlign = widget._rightToggleAlign;
       _leftDescriptionColor = widget.inactiveTextColor;
       _rightDescriptionColor = widget.activeTextColor;
@@ -95,7 +95,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               setState(
                 () {
                   _toggleXAlign = widget._leftToggleAlign;
-                  GlobalVariables.isControlSelect = false;
+                  AnimationVariables.isControlSelect = false;
                   _leftDescriptionColor = widget.activeTextColor;
                   _rightDescriptionColor = widget.inactiveTextColor;
                 },
@@ -124,7 +124,7 @@ class _ToggleButtonState extends State<ToggleButton> {
               setState(
                 () {
                   _toggleXAlign = widget._rightToggleAlign;
-                  GlobalVariables.isControlSelect = true;
+                  AnimationVariables.isControlSelect = true;
                   _leftDescriptionColor = widget.inactiveTextColor;
                   _rightDescriptionColor = widget.activeTextColor;
                 },

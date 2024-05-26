@@ -135,7 +135,7 @@ class _JoystickViewState extends State<JoystickView> {
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           setState(() {
-                            GlobalVariables.isJoyLeftDragging =
+                            AnimationVariables.isJoyLeftDragging =
                                 true; // 드래그 중임을 나타냄
 
                             // 새로운 x, y 좌표 계산
@@ -162,18 +162,16 @@ class _JoystickViewState extends State<JoystickView> {
                             SetTxData.Joystick_Input_Left_Y =
                                 mapValue(_leftcircleY, 0, (radius), 0, 100)
                                     .toInt();
-                            GlobalVariables.isDataSendFlag = true;
                           });
                         },
                         onPanEnd: (details) {
                           setState(() {
-                            GlobalVariables.isJoyLeftDragging =
+                            AnimationVariables.isJoyLeftDragging =
                                 false; // 드래그 종료됨
                             _leftcircleX = 0;
                             _leftcircleY = 0;
                             SetTxData.Joystick_Input_Left_X = 0;
                             SetTxData.Joystick_Input_Left_Y = 0;
-                            GlobalVariables.isDataSendFlag = true;
                           });
                         },
                         child: Container(
@@ -447,8 +445,8 @@ class _JoystickViewState extends State<JoystickView> {
                                       onTap: () {
                                         setState(() {
                                           if ((row == 5) & (col == 5)) {
-                                            GlobalVariables.resetColor();
-                                            GlobalVariables
+                                            GraphicVariables.resetColor();
+                                            GraphicVariables
                                                     .selectColor11x11[row]
                                                 [col] = Colors.green;
                                             SetTxData.Button_Pedal = 6;
@@ -459,16 +457,16 @@ class _JoystickViewState extends State<JoystickView> {
                                               case 0:
                                               case 10:
                                                 if ((col < 2) | (col > 8)) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
                                               case 1:
                                               case 9:
                                                 if ((col < 3) | (col > 7)) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
@@ -477,8 +475,8 @@ class _JoystickViewState extends State<JoystickView> {
                                               case 7:
                                               case 8:
                                                 if ((col < 4) | (col > 6)) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
@@ -486,8 +484,8 @@ class _JoystickViewState extends State<JoystickView> {
                                               case 5:
                                               case 6:
                                                 if (col != 5) {
-                                                  GlobalVariables.resetColor();
-                                                  GlobalVariables.setPivot(
+                                                  GraphicVariables.resetColor();
+                                                  GraphicVariables.setPivot(
                                                       col, row, cellHeight);
                                                 } else {}
                                                 break;
@@ -498,7 +496,7 @@ class _JoystickViewState extends State<JoystickView> {
                                       child: Container(
                                         height: cellHeight,
                                         decoration: BoxDecoration(
-                                          color: GlobalVariables
+                                          color: GraphicVariables
                                               .selectColor11x11[row][col],
                                           shape: BoxShape.circle,
                                         ),
@@ -508,8 +506,8 @@ class _JoystickViewState extends State<JoystickView> {
                                 ),
                               ),
                             ),
-                            if (GlobalVariables.isArrowVisible &
-                                GlobalVariables.isArrowshow)
+                            if (AnimationVariables.isArrowVisible &
+                                AnimationVariables.isArrowshow)
                               Positioned(
                                 left: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
                                 child: ShaderMask(
@@ -517,13 +515,13 @@ class _JoystickViewState extends State<JoystickView> {
                                     return LinearGradient(
                                       begin: Alignment(
                                           -1 -
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
                                       end: Alignment(
                                           1 -
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
@@ -539,8 +537,8 @@ class _JoystickViewState extends State<JoystickView> {
                                       size: (Size_Width * 0.2)),
                                 ),
                               )
-                            else if (!GlobalVariables.isArrowVisible &
-                                GlobalVariables.isArrowshow)
+                            else if (!AnimationVariables.isArrowVisible &
+                                AnimationVariables.isArrowshow)
                               Positioned(
                                 right: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
                                 child: ShaderMask(
@@ -548,13 +546,13 @@ class _JoystickViewState extends State<JoystickView> {
                                     return LinearGradient(
                                       begin: Alignment(
                                           -1 +
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
                                       end: Alignment(
                                           1 +
-                                              GlobalVariables
+                                              AnimationVariables
                                                   .streatanimationController
                                                   .value,
                                           0),
@@ -570,14 +568,14 @@ class _JoystickViewState extends State<JoystickView> {
                                       size: (Size_Width * 0.2)),
                                 ),
                               ),
-                            if (GlobalVariables.isRotateVisible &
-                                GlobalVariables.isRotateshow)
+                            if (AnimationVariables.isRotateVisible &
+                                AnimationVariables.isRotateshow)
                               AnimatedBuilder(
-                                animation:
-                                    GlobalVariables.rotateanimationController,
+                                animation: AnimationVariables
+                                    .rotateanimationController,
                                 builder: (context, child) {
                                   return Transform.rotate(
-                                    angle: GlobalVariables
+                                    angle: AnimationVariables
                                             .rotateanimationController.value *
                                         2.0 *
                                         pi,
@@ -601,14 +599,14 @@ class _JoystickViewState extends State<JoystickView> {
                                   ),
                                 ),
                               )
-                            else if (!GlobalVariables.isRotateVisible &
-                                GlobalVariables.isRotateshow)
+                            else if (!AnimationVariables.isRotateVisible &
+                                AnimationVariables.isRotateshow)
                               AnimatedBuilder(
-                                animation:
-                                    GlobalVariables.rotateanimationController,
+                                animation: AnimationVariables
+                                    .rotateanimationController,
                                 builder: (context, child) {
                                   return Transform.rotate(
-                                    angle: GlobalVariables
+                                    angle: AnimationVariables
                                             .rotateanimationController.value *
                                         -2.0 *
                                         pi,
@@ -686,11 +684,10 @@ class _JoystickViewState extends State<JoystickView> {
                                 child: ElevatedButton(
                                   onPressed: () {
                                     // print('Reset Button Click');
-                                    GlobalVariables.resetColor();
+                                    GraphicVariables.resetColor();
                                     SetTxData.Pivot_Rcx = 0;
                                     SetTxData.Pivot_Rcy = 0;
                                     SetTxData.Button_Pedal = 12;
-                                    GlobalVariables.isDataSendFlag = true;
                                   },
                                   style: ElevatedButton.styleFrom(
                                     backgroundColor: Color(0xFF212121), // 버튼 색상
@@ -807,7 +804,7 @@ class _JoystickViewState extends State<JoystickView> {
                       child: GestureDetector(
                         onPanUpdate: (details) {
                           setState(() {
-                            GlobalVariables.isJoyRightDragging =
+                            AnimationVariables.isJoyRightDragging =
                                 true; // 드래그 중임을 나타냄
 
                             // 새로운 x, y 좌표 계산
@@ -834,18 +831,16 @@ class _JoystickViewState extends State<JoystickView> {
                             SetTxData.Joystick_Input_Right_Y =
                                 mapValue(_rightcircleY, 0, (radius), 0, 100)
                                     .toInt();
-                            GlobalVariables.isDataSendFlag = true;
                           });
                         },
                         onPanEnd: (details) {
                           setState(() {
-                            GlobalVariables.isJoyRightDragging =
+                            AnimationVariables.isJoyRightDragging =
                                 false; // 드래그 종료됨
                             _rightcircleX = 0;
                             _rightcircleY = 0;
                             SetTxData.Joystick_Input_Right_X = 0;
                             SetTxData.Joystick_Input_Right_Y = 0;
-                            GlobalVariables.isDataSendFlag = true;
                           });
                         },
                         child: Container(
@@ -934,20 +929,19 @@ class _JoystickViewState extends State<JoystickView> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: List.generate(
-                        GlobalVariables.driveModes.length,
+                        AnimationVariables.driveModes.length,
                         (index) {
                           return DriveModeButton(
-                            driveMode: GlobalVariables.driveModes[index],
+                            driveMode: AnimationVariables.driveModes[index],
                             isSelected: index ==
-                                GlobalVariables.drive_selectedButtonIndex,
+                                AnimationVariables.drive_selectedButtonIndex,
                             onPressed: () {
                               setState(() {
-                                GlobalVariables.drive_selectedButtonIndex =
+                                AnimationVariables.drive_selectedButtonIndex =
                                     index;
                                 // print('Drive Button Click');
-                                SetTxData.Button_Pedal =
-                                    GlobalVariables.drive_selectedButtonIndex;
-                                GlobalVariables.isDataSendFlag = true;
+                                SetTxData.Button_Pedal = AnimationVariables
+                                    .drive_selectedButtonIndex;
                               });
                             },
                           );
