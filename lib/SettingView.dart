@@ -33,6 +33,10 @@ class _SettingViewState extends State<SettingView> {
         ? (GlobalVariables.TargetPort).toString()
         : '',
   );
+  final FocusNode threshold1FocusNode = FocusNode();
+  final FocusNode threshold2FocusNode = FocusNode();
+  final FocusNode threshold3FocusNode = FocusNode();
+  final FocusNode threshold4FocusNode = FocusNode();
 
   _saveThresholdValue(String key, double value) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
@@ -77,27 +81,33 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.25,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  decoration: InputDecoration(
-                      hintText: 'PAD IP(Def.192.168.0.5)',
-                      hintStyle: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
-                      )),
-                  keyboardType: TextInputType.number,
-                  controller: padIpController,
+              GestureDetector(
+                onTap: () =>
+                    _showInputModal(context, 'PAD IP', padIpController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.25,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      decoration: InputDecoration(
+                          hintText: 'PAD IP(Def.192.168.0.5)',
+                          hintStyle: TextStyle(
+                            color: const Color.fromARGB(255, 162, 162, 162),
+                          )),
+                      keyboardType: TextInputType.number,
+                      controller: padIpController,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -113,27 +123,33 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.25,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, (Size_Width * 0.1), 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  decoration: InputDecoration(
-                      hintText: 'PORT(Def. 2020)',
-                      hintStyle: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
-                      )),
-                  keyboardType: TextInputType.number,
-                  controller: padPortController,
+              GestureDetector(
+                onTap: () =>
+                    _showInputModal(context, 'PAD PORT', padPortController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.25,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, (Size_Width * 0.1), 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      decoration: InputDecoration(
+                          hintText: 'PORT(Def. 2020)',
+                          hintStyle: TextStyle(
+                            color: const Color.fromARGB(255, 162, 162, 162),
+                          )),
+                      keyboardType: TextInputType.number,
+                      controller: padPortController,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -156,27 +172,33 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.25,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  decoration: InputDecoration(
-                      hintText: 'Target IP(Def.192.168.0.3)',
-                      hintStyle: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
-                      )),
-                  keyboardType: TextInputType.number,
-                  controller: targetIpController,
+              GestureDetector(
+                onTap: () =>
+                    _showInputModal(context, 'Target IP', targetIpController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.25,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, 0, 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      decoration: InputDecoration(
+                          hintText: 'Target IP(Def.192.168.0.3)',
+                          hintStyle: TextStyle(
+                            color: const Color.fromARGB(255, 162, 162, 162),
+                          )),
+                      keyboardType: TextInputType.number,
+                      controller: targetIpController,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -192,27 +214,33 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.25,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, (Size_Width * 0.1), 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  decoration: InputDecoration(
-                      hintText: 'PORT(Def. 3030)',
-                      hintStyle: TextStyle(
-                        color: const Color.fromARGB(255, 162, 162, 162),
-                      )),
-                  keyboardType: TextInputType.number,
-                  controller: targetPortController,
+              GestureDetector(
+                onTap: () => _showInputModal(
+                    context, 'Target PORT', targetPortController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.25,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, (Size_Width * 0.1), 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      decoration: InputDecoration(
+                          hintText: 'PORT(Def. 3030)',
+                          hintStyle: TextStyle(
+                            color: const Color.fromARGB(255, 162, 162, 162),
+                          )),
+                      keyboardType: TextInputType.number,
+                      controller: targetPortController,
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -349,22 +377,28 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.07,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  keyboardType: TextInputType.number,
-                  controller: GlobalVariables.leftcrabthresholdController,
+              GestureDetector(
+                onTap: () => _showInputModal(context, 'LeftCrab',
+                    GlobalVariables.leftcrabthresholdController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.07,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      keyboardType: TextInputType.number,
+                      controller: GlobalVariables.leftcrabthresholdController,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -379,22 +413,28 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.07,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  keyboardType: TextInputType.number,
-                  controller: GlobalVariables.rightcrabthresholdController,
+              GestureDetector(
+                onTap: () => _showInputModal(context, 'RightCrab',
+                    GlobalVariables.rightcrabthresholdController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.07,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      keyboardType: TextInputType.number,
+                      controller: GlobalVariables.rightcrabthresholdController,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -409,22 +449,28 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.07,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  keyboardType: TextInputType.number,
-                  controller: GlobalVariables.fwscrabthresholdController,
+              GestureDetector(
+                onTap: () => _showInputModal(context, 'FWSCrab',
+                    GlobalVariables.fwscrabthresholdController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.07,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      keyboardType: TextInputType.number,
+                      controller: GlobalVariables.fwscrabthresholdController,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -439,22 +485,28 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ),
               ),
-              Container(
-                width: Size_Width * 0.07,
-                height: Size_Height * 0.1,
-                margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
-                padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
-                decoration: BoxDecoration(
-                  color: Color(0xFFF3F3F3),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: TextField(
-                  style: new TextStyle(
-                      fontWeight: FontWeight.w600,
-                      fontSize: (Size_Width * 0.015),
-                      color: Color(0xFF2A2A2A)),
-                  keyboardType: TextInputType.number,
-                  controller: GlobalVariables.d4crabthresholdController,
+              GestureDetector(
+                onTap: () => _showInputModal(context, 'D4Crab',
+                    GlobalVariables.d4crabthresholdController),
+                child: AbsorbPointer(
+                  child: Container(
+                    width: Size_Width * 0.07,
+                    height: Size_Height * 0.1,
+                    margin: EdgeInsets.fromLTRB(0, 5, 20, 5),
+                    padding: EdgeInsets.fromLTRB(10, 5, 10, 1),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF3F3F3),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: TextField(
+                      style: new TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: (Size_Width * 0.015),
+                          color: Color(0xFF2A2A2A)),
+                      keyboardType: TextInputType.number,
+                      controller: GlobalVariables.d4crabthresholdController,
+                    ),
+                  ),
                 ),
               ),
               Container(
@@ -575,4 +627,109 @@ class _SettingViewState extends State<SettingView> {
       ],
     );
   }
+
+  void _showInputModal(
+      BuildContext context, String label, TextEditingController controller) {
+    FocusNode focusNode = FocusNode();
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      builder: (BuildContext context) {
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          FocusScope.of(context).requestFocus(focusNode);
+        });
+
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: TextField(
+                  controller: controller,
+                  focusNode: focusNode,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(labelText: label),
+                  onSubmitted: (value) {
+                    Navigator.pop(context);
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  // void _showInputModal(BuildContext context, int index) {
+  //   TextEditingController controller;
+  //   String label;
+  //   double value;
+  //   FocusNode focusNode;
+
+  //   switch (index) {
+  //     case 1:
+  //       controller = GlobalVariables.d4crabthresholdController;
+  //       label = 'Threshold 1';
+  //       value = GlobalVariables.D4Crab_Threshold;
+  //       focusNode = threshold1FocusNode;
+  //       break;
+  //     case 2:
+  //       controller = GlobalVariables.d4crabthresholdController;
+  //       label = 'Threshold 2';
+  //       value = GlobalVariables.D4Crab_Threshold;
+  //       focusNode = threshold1FocusNode;
+  //       break;
+  //     case 3:
+  //       controller = GlobalVariables.d4crabthresholdController;
+  //       label = 'Threshold 3';
+  //       value = GlobalVariables.D4Crab_Threshold;
+  //       focusNode = threshold1FocusNode;
+  //       break;
+  //     case 4:
+  //       controller = GlobalVariables.d4crabthresholdController;
+  //       label = 'Threshold 4';
+  //       value = GlobalVariables.D4Crab_Threshold;
+  //       focusNode = threshold1FocusNode;
+  //       break;
+  //     default:
+  //       return;
+  //   }
+
+  //   showModalBottomSheet(
+  //     context: context,
+  //     isScrollControlled: true,
+  //     builder: (BuildContext context) {
+  //       WidgetsBinding.instance.addPostFrameCallback((_) {
+  //         FocusScope.of(context).requestFocus(focusNode);
+  //       });
+
+  //       return Padding(
+  //         padding: EdgeInsets.only(
+  //           bottom: MediaQuery.of(context).viewInsets.bottom,
+  //         ),
+  //         child: Column(
+  //           mainAxisSize: MainAxisSize.min,
+  //           children: <Widget>[
+  //             Padding(
+  //               padding: const EdgeInsets.all(16.0),
+  //               child: TextField(
+  //                 controller: controller,
+  //                 focusNode: focusNode,
+  //                 keyboardType: TextInputType.number,
+  //                 decoration: InputDecoration(labelText: label),
+  //                 onSubmitted: (value) {
+  //                   Navigator.pop(context);
+  //                 },
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 }
