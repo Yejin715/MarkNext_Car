@@ -80,35 +80,19 @@ class UDP {
     Data[12] = (SetTxData.Drive_Mode_Switch & 0xFF);
     Data[13] = (SetTxData.Pivot_Rcx & 0xFF);
     Data[14] = (SetTxData.Pivot_Rcy & 0xFF);
-    Data[15] = (SetTxData.Accel_X & 0xFF);
-    Data[16] = ((SetTxData.Accel_X >> 8) & 0xFF);
-    Data[17] = (SetTxData.Accel_Y & 0xFF);
-    Data[18] = ((SetTxData.Accel_Y >> 8) & 0xFF);
-    Data[19] = (SetTxData.Accel_Z & 0xFF);
-    Data[20] = ((SetTxData.Accel_Z >> 8) & 0xFF);
-    Data[21] = (SetTxData.Gyro_Y & 0xFF);
-    Data[22] = ((SetTxData.Gyro_Y >> 8) & 0xFF);
-    Data[23] = (SetTxData.Gyro_P & 0xFF);
-    Data[24] = ((SetTxData.Gyro_P >> 8) & 0xFF);
-    Data[25] = (SetTxData.Gyro_R & 0xFF);
-    Data[26] = ((SetTxData.Gyro_R >> 8) & 0xFF);
+    // Data[15] = (SetTxData.Accel_X & 0xFF);
+    // Data[16] = ((SetTxData.Accel_X >> 8) & 0xFF);
+    // Data[17] = (SetTxData.Accel_Y & 0xFF);
+    // Data[18] = ((SetTxData.Accel_Y >> 8) & 0xFF);
+    // Data[19] = (SetTxData.Accel_Z & 0xFF);
+    // Data[20] = ((SetTxData.Accel_Z >> 8) & 0xFF);
+    // Data[21] = (SetTxData.Gyro_Y & 0xFF);
+    // Data[22] = ((SetTxData.Gyro_Y >> 8) & 0xFF);
+    // Data[23] = (SetTxData.Gyro_P & 0xFF);
+    // Data[24] = ((SetTxData.Gyro_P >> 8) & 0xFF);
+    // Data[25] = (SetTxData.Gyro_R & 0xFF);
+    // Data[26] = ((SetTxData.Gyro_R >> 8) & 0xFF);
     return Data;
-    // ByteData byteData = ByteData.sublistView(Uint8List.fromList(Data));
-
-    // ByteData를 사용하여 signed int 값을 바이트 배열에 쓰기
-    // byteData.setInt16(0, SetTxData.Msg2_SBW_Cmd_Tx, Endian.little);
-    // byteData.setUint8(2, SetTxData.Accel_Pedal_Angle);
-    // byteData.setUint8(3, SetTxData.Button_Pedal);
-    // byteData.setInt16(4, SetTxData.Joystick_Input_Left_X, Endian.little);
-    // byteData.setInt16(6, SetTxData.Joystick_Input_Left_Y, Endian.little);
-    // byteData.setInt16(8, SetTxData.Joystick_Input_Right_X, Endian.little);
-    // byteData.setInt16(10, SetTxData.Joystick_Input_Right_Y, Endian.little);
-    // byteData.setUint8(12, SetTxData.Drive_Mode_Switch);
-    // byteData.setInt8(13, SetTxData.Pivot_Rcx);
-    // byteData.setInt8(14, SetTxData.Pivot_Rcy);
-    // print(byteData.buffer.asUint8List());
-    // print(SetTxData.Button_Pedal);
-    // return byteData.buffer.asUint8List();
   }
 
   void RxData_Check(List<int> Data) {
@@ -144,37 +128,6 @@ class UDP {
         (extract3BytesConvertToInt(Data, 33, 34, 35) * 0.001).toInt();
     SetRxData.Vehicle_Speed = Data[36];
     SetRxData.Battery_Soc = (Data[37]);
-    // ByteData byteData = ByteData.sublistView(Uint8List.fromList(Data));
-
-    // SetRxData.Corner_Mode = byteData.getUint8(0);
-    // SetRxData.Mode_Disable_Button_Blink = byteData.getUint8(1);
-    // SetRxData.Corner_Mode_Disable_Button = byteData.getUint16(2, Endian.little);
-    // SetRxData.Measured_Steer_Angle_Fl =
-    //     (byteData.getInt16(4, Endian.little) / 0.02).toInt();
-    // SetRxData.Target_Steer_Current_Fl =
-    //     (byteData.getInt32(6, Endian.little) / 0.001).toInt();
-    // SetRxData.Measured_Steer_Current_Fl =
-    //     (byteData.getInt32(9, Endian.little) / 0.001).toInt();
-    // SetRxData.Measured_Steer_Angle_Fr =
-    //     (byteData.getInt16(12, Endian.little) / 0.02).toInt();
-    // SetRxData.Target_Steer_Current_Fr =
-    //     (byteData.getInt32(14, Endian.little) / 0.001).toInt();
-    // SetRxData.Measured_Steer_Current_Fr =
-    //     (byteData.getInt32(17, Endian.little) / 0.001).toInt();
-    // SetRxData.Measured_Steer_Angle_Rl =
-    //     (byteData.getInt16(20, Endian.little) / 0.02).toInt();
-    // SetRxData.Target_Steer_Current_Rl =
-    //     (byteData.getInt32(22, Endian.little) / 0.001).toInt();
-    // SetRxData.Measured_Steer_Current_Rl =
-    //     (byteData.getInt32(25, Endian.little) / 0.001).toInt();
-    // SetRxData.Measured_Steer_Angle_Rr =
-    //     (byteData.getInt(28, Endian.little) / 0.02).toInt();
-    // SetRxData.Target_Steer_Current_Rr =
-    //     (byteData.getInt32(30, Endian.little) / 0.001).toInt();
-    // SetRxData.Measured_Steer_Current_Rr =
-    //     (byteData.getInt32(33, Endian.little) / 0.001).toInt();
-    // SetRxData.Vehicle_Speed = byteData.getUint8(36);
-    // SetRxData.Battery_Soc = (byteData.getUint8(37) / 0.5).toInt();
   }
 
   int extract2BytesConvertToInt(List<int> byteData, int index1, int index2) {

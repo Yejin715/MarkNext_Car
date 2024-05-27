@@ -652,7 +652,7 @@ class _JoystickViewState extends State<JoystickView> {
                                 child: Container(
                                   padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                                   child: Text(
-                                    '${(SetRxData.Corner_Mode_Disable_Button >= 0 && SetRxData.Corner_Mode_Disable_Button < GlobalVariables.DriveMode.length) ? GlobalVariables.DriveMode[SetRxData.Corner_Mode_Disable_Button] : ''}',
+                                    '${(SetRxData.Corner_Mode >= 0 && SetRxData.Corner_Mode < GlobalVariables.DriveMode.length) ? GlobalVariables.DriveMode[SetRxData.Corner_Mode] : 'Parking'}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: (Size_Width * 0.015),

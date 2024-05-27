@@ -7,8 +7,8 @@ import 'dart:typed_data';
 import './UDP.dart';
 
 class SetTxData {
-  // static List<int> TxData = List<int>.filled(15, 0);
-  static List<int> TxData = List<int>.filled(27, 0);
+  static List<int> TxData = List<int>.filled(15, 0);
+  // static List<int> TxData = List<int>.filled(27, 0);
 
   static int Msg2_SBW_Cmd_Tx = 0;
   static int Accel_Pedal_Angle = 0;
@@ -69,8 +69,8 @@ class GraphicVariables {
   static void setPivot(int xvalue, int yvalue, double height) {
     GraphicVariables.selectColor11x11[yvalue][xvalue] = Colors.red;
     SetTxData.Button_Pedal = 7;
-    SetTxData.Pivot_Rcx = (xvalue - 5);
-    SetTxData.Pivot_Rcy = -(yvalue - 5);
+    SetTxData.Pivot_Rcx = -(yvalue - 5);
+    SetTxData.Pivot_Rcy = (xvalue - 5);
     GraphicVariables.circlepoint = Offset(
         (xvalue * height) + (height / 2), (yvalue * height) + (height / 2));
   }
@@ -103,10 +103,10 @@ class GlobalVariables {
   static String TargetIp = "";
   static int TargetPort = 0;
 
-  static double LeftCrab_Threshold = 2.5;
-  static double RightCrab_Threshold = -2.5;
-  static double FWSCrab_Threshold = 4.5;
-  static double D4Crab_Threshold = -4.5;
+  static double LeftCrab_Threshold = -2.5;
+  static double RightCrab_Threshold = 2.5;
+  static double FWS_Threshold = -4.5;
+  static double D4_Threshold = 4.5;
 
   static TextEditingController leftcrabthresholdController =
       TextEditingController(
@@ -114,27 +114,25 @@ class GlobalVariables {
   static TextEditingController rightcrabthresholdController =
       TextEditingController(
           text: (GlobalVariables.RightCrab_Threshold).toString());
-  static TextEditingController fwscrabthresholdController =
-      TextEditingController(
-          text: (GlobalVariables.FWSCrab_Threshold).toString());
-  static TextEditingController d4crabthresholdController =
-      TextEditingController(
-          text: (GlobalVariables.D4Crab_Threshold).toString());
+  static TextEditingController fwsthresholdController =
+      TextEditingController(text: (GlobalVariables.FWS_Threshold).toString());
+  static TextEditingController d4thresholdController =
+      TextEditingController(text: (GlobalVariables.D4_Threshold).toString());
 
   static List<String> DriveMode = [
     "Parking",
-    "Reverse",
-    "Neutral",
-    "Drive",
+    "Parking",
+    "Parking",
+    "Parking",
     "Left Crab",
     "Right Crab",
-    "Spin",
+    "Zero Spin",
     "PIVOT",
-    "None",
-    "None",
+    "Parking",
+    "Parking",
     "FWS",
     "D4",
-    "Reset"
+    "Parking"
   ];
 }
 

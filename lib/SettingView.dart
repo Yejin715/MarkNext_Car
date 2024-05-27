@@ -441,7 +441,7 @@ class _SettingViewState extends State<SettingView> {
                 height: Size_Height * 0.1,
                 alignment: Alignment.centerRight,
                 child: Text(
-                  'FWSCrab : ',
+                  'FWS : ',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: (Size_Width * 0.015),
@@ -450,8 +450,8 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _showInputModal(context, 'FWSCrab',
-                    GlobalVariables.fwscrabthresholdController),
+                onTap: () => _showInputModal(
+                    context, 'FWS', GlobalVariables.fwsthresholdController),
                 child: AbsorbPointer(
                   child: Container(
                     width: Size_Width * 0.07,
@@ -468,7 +468,7 @@ class _SettingViewState extends State<SettingView> {
                           fontSize: (Size_Width * 0.015),
                           color: Color(0xFF2A2A2A)),
                       keyboardType: TextInputType.number,
-                      controller: GlobalVariables.fwscrabthresholdController,
+                      controller: GlobalVariables.fwsthresholdController,
                     ),
                   ),
                 ),
@@ -477,7 +477,7 @@ class _SettingViewState extends State<SettingView> {
                 height: Size_Height * 0.1,
                 alignment: Alignment.centerRight,
                 child: Text(
-                  'D4Crab : ',
+                  'D4 : ',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: (Size_Width * 0.015),
@@ -486,8 +486,8 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _showInputModal(context, 'D4Crab',
-                    GlobalVariables.d4crabthresholdController),
+                onTap: () => _showInputModal(
+                    context, 'D4', GlobalVariables.d4thresholdController),
                 child: AbsorbPointer(
                   child: Container(
                     width: Size_Width * 0.07,
@@ -504,7 +504,7 @@ class _SettingViewState extends State<SettingView> {
                           fontSize: (Size_Width * 0.015),
                           color: Color(0xFF2A2A2A)),
                       keyboardType: TextInputType.number,
-                      controller: GlobalVariables.d4crabthresholdController,
+                      controller: GlobalVariables.d4thresholdController,
                     ),
                   ),
                 ),
@@ -527,22 +527,20 @@ class _SettingViewState extends State<SettingView> {
                                 GlobalVariables
                                     .rightcrabthresholdController.text) ??
                             -2.5;
-                        GlobalVariables.FWSCrab_Threshold = double.tryParse(
-                                GlobalVariables
-                                    .fwscrabthresholdController.text) ??
+                        GlobalVariables.FWS_Threshold = double.tryParse(
+                                GlobalVariables.fwsthresholdController.text) ??
                             4.5;
-                        GlobalVariables.D4Crab_Threshold = double.tryParse(
-                                GlobalVariables
-                                    .d4crabthresholdController.text) ??
+                        GlobalVariables.D4_Threshold = double.tryParse(
+                                GlobalVariables.d4thresholdController.text) ??
                             -4.5;
                         _saveThresholdValue('LeftCrab_Threshold',
                             GlobalVariables.LeftCrab_Threshold);
                         _saveThresholdValue('RightCrab_Threshold',
                             GlobalVariables.RightCrab_Threshold);
-                        _saveThresholdValue('FWSCrab_Threshold',
-                            GlobalVariables.FWSCrab_Threshold);
-                        _saveThresholdValue('D4Crab_Threshold',
-                            GlobalVariables.D4Crab_Threshold);
+                        _saveThresholdValue(
+                            'FWS_Threshold', GlobalVariables.FWS_Threshold);
+                        _saveThresholdValue(
+                            'D4_Threshold', GlobalVariables.D4_Threshold);
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Color(0xFF748FC2), // 버튼 색상

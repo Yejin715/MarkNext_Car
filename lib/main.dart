@@ -26,8 +26,6 @@ class Main extends StatefulWidget {
 }
 
 class _Main extends State<Main> with TickerProviderStateMixin {
-  final List<String> driveModes = ['P', 'R', 'N', 'D']; // 드라이브 모드 리스트
-  int selectedButtonIndex = 0; // 선택된 버튼의 인덱스, 초기값은 0
   late TimerMonitor _TimerMonitor;
   List<double> _accelerometerValues = [0.0, 0.0, 0.0];
   List<double> _gyroValues = [0.0, 0.0, 0.0];
@@ -42,8 +40,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
     _loadThresholdValues();
     Wakelock.enable();
-    // SetTxData.TxData = List<int>.filled(15, 0);
-    SetTxData.TxData = List<int>.filled(27, 0);
+    SetTxData.TxData = List<int>.filled(15, 0);
+    // SetTxData.TxData = List<int>.filled(27, 0);
     SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();
@@ -67,22 +65,20 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     setState(() {
       GlobalVariables.LeftCrab_Threshold =
-          prefs.getDouble('LeftCrab_Threshold') ?? 2.5;
+          prefs.getDouble('LeftCrab_Threshold') ?? -2.5;
       GlobalVariables.RightCrab_Threshold =
-          prefs.getDouble('RightCrab_Threshold') ?? -2.5;
-      GlobalVariables.FWSCrab_Threshold =
-          prefs.getDouble('FWSCrab_Threshold') ?? 4.5;
-      GlobalVariables.D4Crab_Threshold =
-          prefs.getDouble('D4Crab_Threshold') ?? -4.5;
+          prefs.getDouble('RightCrab_Threshold') ?? 2.5;
+      GlobalVariables.FWS_Threshold = prefs.getDouble('FWS_Threshold') ?? -4.5;
+      GlobalVariables.D4_Threshold = prefs.getDouble('D4_Threshold') ?? 4.5;
 
       GlobalVariables.leftcrabthresholdController.text =
           (GlobalVariables.LeftCrab_Threshold).toString();
       GlobalVariables.rightcrabthresholdController.text =
           (GlobalVariables.RightCrab_Threshold).toString();
-      GlobalVariables.fwscrabthresholdController.text =
-          (GlobalVariables.FWSCrab_Threshold).toString();
-      GlobalVariables.d4crabthresholdController.text =
-          (GlobalVariables.D4Crab_Threshold).toString();
+      GlobalVariables.fwsthresholdController.text =
+          (GlobalVariables.FWS_Threshold).toString();
+      GlobalVariables.d4thresholdController.text =
+          (GlobalVariables.D4_Threshold).toString();
     });
   }
 
@@ -149,7 +145,6 @@ class _Main extends State<Main> with TickerProviderStateMixin {
 
         if (GlobalVariables.showContainer) {
           if ((_gyroValues[0] < GlobalVariables.LeftCrab_Threshold)) {
-            print('${_gyroValues[0]}, Left');
             SetTxData.Button_Pedal = 4;
             AnimationVariables.isArrowVisible = true;
             if (!AnimationVariables.isArrowshow) {
@@ -157,7 +152,6 @@ class _Main extends State<Main> with TickerProviderStateMixin {
               AnimationVariables.streatanimationController.repeat();
             }
           } else if ((_gyroValues[0] > GlobalVariables.RightCrab_Threshold)) {
-            print('${_gyroValues[0]}, Right');
             SetTxData.Button_Pedal = 5;
             AnimationVariables.isArrowVisible = false;
             if (!AnimationVariables.isArrowshow) {
@@ -166,9 +160,9 @@ class _Main extends State<Main> with TickerProviderStateMixin {
             }
           } else {}
 
-          if (_gyroValues[1] < GlobalVariables.FWSCrab_Threshold) {
+          if (_gyroValues[1] < GlobalVariables.FWS_Threshold) {
             SetTxData.Button_Pedal = 10;
-          } else if (_gyroValues[1] > GlobalVariables.D4Crab_Threshold) {
+          } else if (_gyroValues[1] > GlobalVariables.D4_Threshold) {
             SetTxData.Button_Pedal = 11;
           } else {}
         }
