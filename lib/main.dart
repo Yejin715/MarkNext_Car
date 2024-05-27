@@ -55,10 +55,20 @@ class _Main extends State<Main> with TickerProviderStateMixin {
       duration: const Duration(seconds: 2),
       vsync: this,
     )..repeat(); // 애니메이션 반복
-    AnimationVariables.streatanimationController = AnimationController(
-      duration: const Duration(seconds: 2),
+    // AnimationVariables.streatanimationController = AnimationController(
+    //   duration: const Duration(seconds: 2),
+    //   vsync: this,
+    // )..repeat(); // 애니메이션 반복
+
+    AnimationVariables.OperatinganimationController = AnimationController(
+      duration: const Duration(milliseconds: 500),
       vsync: this,
-    )..repeat(); // 애니메이션 반복
+    )..repeat(reverse: true);
+
+    AnimationVariables.Operatinganimation = ColorTween(
+      begin: Color(0xFF2A2A2A),
+      end: Color(0xFFC358E9),
+    ).animate(AnimationVariables.OperatinganimationController);
   }
 
   _loadThresholdValues() async {
@@ -149,14 +159,14 @@ class _Main extends State<Main> with TickerProviderStateMixin {
             AnimationVariables.isArrowVisible = true;
             if (!AnimationVariables.isArrowshow) {
               AnimationVariables.isArrowshow = true;
-              AnimationVariables.streatanimationController.repeat();
+              // AnimationVariables.streatanimationController.repeat();
             }
           } else if ((_gyroValues[0] > GlobalVariables.RightCrab_Threshold)) {
             SetTxData.Button_Pedal = 5;
             AnimationVariables.isArrowVisible = false;
             if (!AnimationVariables.isArrowshow) {
               AnimationVariables.isArrowshow = true;
-              AnimationVariables.streatanimationController.repeat();
+              // AnimationVariables.streatanimationController.repeat();
             }
           } else {}
 

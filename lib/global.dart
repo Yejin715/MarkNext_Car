@@ -81,8 +81,11 @@ class AnimationVariables {
   static bool isRotateshow = false;
   static bool isArrowshow = false;
   static bool isArrowVisible = false;
+  static bool isOperatingshow = false;
   static late AnimationController rotateanimationController;
-  static late AnimationController streatanimationController;
+  // static late AnimationController streatanimationController;
+  static late AnimationController OperatinganimationController;
+  static late Animation<Color?> Operatinganimation;
   static int drive_selectedButtonIndex = -1;
   static List<String> driveModes = ['P', 'R', 'N', 'D']; // 드라이브 모드 리스트
 
@@ -158,7 +161,7 @@ class TimerMonitor {
 
           if (AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = false;
-            AnimationVariables.streatanimationController.stop();
+            // AnimationVariables.streatanimationController.stop();
           }
           break;
         case 4:
@@ -169,7 +172,7 @@ class TimerMonitor {
           AnimationVariables.isArrowVisible = true;
           if (!AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = true;
-            AnimationVariables.streatanimationController.repeat();
+            // AnimationVariables.streatanimationController.repeat();
           }
           break;
         case 5:
@@ -180,7 +183,7 @@ class TimerMonitor {
           AnimationVariables.isArrowVisible = false;
           if (!AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = true;
-            AnimationVariables.streatanimationController.repeat();
+            // AnimationVariables.streatanimationController.repeat();
           }
           break;
         case 6:
@@ -188,7 +191,7 @@ class TimerMonitor {
           AnimationVariables.drive_selectedButtonIndex = -1;
           if (AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = false;
-            AnimationVariables.streatanimationController.stop();
+            // AnimationVariables.streatanimationController.stop();
           }
           break;
         default:
@@ -199,7 +202,7 @@ class TimerMonitor {
 
           if (AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = false;
-            AnimationVariables.streatanimationController.stop();
+            // AnimationVariables.streatanimationController.stop();
           }
           break;
       }

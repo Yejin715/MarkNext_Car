@@ -734,40 +734,48 @@ class _TiltViewState extends State<TiltView> {
                         ),
                       ),
                     ),
-                    // Battery Soc
+                    // Operating Mode
                     Container(
-                      child: ImageFiltered(
-                        imageFilter: ImageFilter.blur(
-                          sigmaX: -2,
-                          sigmaY: -2,
-                        ),
-                        child: Container(
-                          width: ((Size_Height * 0.35) - 5),
-                          height: ((Size_Height * 0.35) - 5),
-                          decoration: BoxDecoration(
-                            borderRadius:
-                                BorderRadius.circular((Size_Height * 0.35)),
-                            gradient: RadialGradient(
-                              center: Alignment(0, 0),
-                              radius: 0.5,
-                              colors: <Color>[
-                                Color(0xFF2A2A2A),
-                                Color(0xFFC358E9)
-                              ],
-                              stops: <double>[0.775, 1],
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Color(0xFFC358E9),
-                                spreadRadius: 1,
-                                blurRadius: 1,
-                                offset:
-                                    Offset(0, 0), // changes position of shadow
+                      child: AnimatedBuilder(
+                        animation:
+                            AnimationVariables.OperatinganimationController,
+                        builder: (context, child) {
+                          return Container(
+                            width: ((Size_Height * 0.35) - 5),
+                            height: ((Size_Height * 0.35) - 5),
+                            decoration: BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.circular(Size_Height * 0.35),
+                              gradient: RadialGradient(
+                                center: Alignment(0, 0),
+                                radius: 0.5,
+                                colors: AnimationVariables.isOperatingshow
+                                    ? <Color>[
+                                        Color(0xFF2A2A2A),
+                                        Color.fromARGB(255, 146, 255, 159),
+                                      ]
+                                    : <Color>[
+                                        Color(0xFF2A2A2A),
+                                        AnimationVariables
+                                            .Operatinganimation.value!
+                                      ],
+                                stops: <double>[0.775, 1],
                               ),
-                            ],
-                          ),
-                          alignment: Alignment(0.0, 0.0),
-                          child: Column(
+                              boxShadow: [
+                                BoxShadow(
+                                  color: AnimationVariables.isOperatingshow
+                                      ? Color.fromARGB(255, 146, 255, 159)
+                                      : AnimationVariables
+                                          .Operatinganimation.value!,
+                                  spreadRadius: 1,
+                                  blurRadius: 1,
+                                  offset: Offset(
+                                      0, 0), // changes position of shadow
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment(0.0, 0.0),
+                            child: Column(
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
@@ -776,7 +784,7 @@ class _TiltViewState extends State<TiltView> {
                                 ),
                                 SizedBox(
                                   child: Text(
-                                    'Battery SoC',
+                                    'Operating Mode',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       fontSize: (Size_Width * 0.015),
@@ -786,31 +794,23 @@ class _TiltViewState extends State<TiltView> {
                                 ),
                                 SizedBox(
                                   child: Text(
-                                    '${SetRxData.Battery_Soc}',
+                                    '${(SetRxData.Corner_Mode >= 0 && SetRxData.Corner_Mode < GlobalVariables.DriveMode.length) ? GlobalVariables.DriveMode[SetRxData.Corner_Mode] : 'Parking'}',
                                     style: TextStyle(
                                       fontWeight: FontWeight.w600,
-                                      fontSize: (Size_Width * 0.05),
+                                      fontSize: (Size_Width * 0.03),
                                       color: Color(0xFFFFFFFF),
                                     ),
                                   ),
                                 ),
                                 SizedBox(
-                                  child: Text(
-                                    '%',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: (Size_Width * 0.015),
-                                      color: Color(0xFFFFFFFF),
-                                    ),
-                                  ),
+                                  height: 30,
                                 ),
-                                SizedBox(
-                                  height: 10,
-                                ),
-                              ]),
-                        ),
+                              ],
+                            ),
+                          );
+                        },
                       ),
-                    ),
+                    )
                   ],
                 ),
               ]),

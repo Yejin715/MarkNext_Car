@@ -619,7 +619,7 @@ class _SettingViewState extends State<SettingView> {
 
                         if (AnimationVariables.isArrowshow) {
                           AnimationVariables.isArrowshow = false;
-                          AnimationVariables.streatanimationController.stop();
+                          // AnimationVariables.streatanimationController.stop();
                         }
                       },
                     ),

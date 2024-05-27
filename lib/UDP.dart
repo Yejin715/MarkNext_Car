@@ -128,6 +128,18 @@ class UDP {
         (extract3BytesConvertToInt(Data, 33, 34, 35) * 0.001).toInt();
     SetRxData.Vehicle_Speed = Data[36];
     SetRxData.Battery_Soc = (Data[37]);
+
+    if (SetRxData.Mode_Disable_Button_Blink == 14) {
+      if (!AnimationVariables.isOperatingshow) {
+        AnimationVariables.isOperatingshow = true;
+        AnimationVariables.OperatinganimationController.stop();
+      }
+    } else {
+      if (AnimationVariables.isOperatingshow) {
+        AnimationVariables.isOperatingshow = false;
+        AnimationVariables.OperatinganimationController.repeat(reverse: true);
+      }
+    }
   }
 
   int extract2BytesConvertToInt(List<int> byteData, int index1, int index2) {
