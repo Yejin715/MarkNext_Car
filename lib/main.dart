@@ -147,18 +147,17 @@ class _Main extends State<Main> with TickerProviderStateMixin {
       setState(() {
         _gyroValues = [event.x, event.y, event.z];
 
-        if ((!AnimationVariables.isControlSelect) &
-            (GlobalVariables.showContainer)) {
-          if ((_gyroValues[0] > GlobalVariables.LeftCrab_Threshold)) {
-            print(_gyroValues[0]);
+        if (GlobalVariables.showContainer) {
+          if ((_gyroValues[0] < GlobalVariables.LeftCrab_Threshold)) {
+            print('${_gyroValues[0]}, Left');
             SetTxData.Button_Pedal = 4;
             AnimationVariables.isArrowVisible = true;
             if (!AnimationVariables.isArrowshow) {
               AnimationVariables.isArrowshow = true;
               AnimationVariables.streatanimationController.repeat();
             }
-          } else if ((_gyroValues[0] < GlobalVariables.RightCrab_Threshold)) {
-            print(_gyroValues[0]);
+          } else if ((_gyroValues[0] > GlobalVariables.RightCrab_Threshold)) {
+            print('${_gyroValues[0]}, Right');
             SetTxData.Button_Pedal = 5;
             AnimationVariables.isArrowVisible = false;
             if (!AnimationVariables.isArrowshow) {
@@ -167,9 +166,9 @@ class _Main extends State<Main> with TickerProviderStateMixin {
             }
           } else {}
 
-          if (_gyroValues[1] > GlobalVariables.FWSCrab_Threshold) {
+          if (_gyroValues[1] < GlobalVariables.FWSCrab_Threshold) {
             SetTxData.Button_Pedal = 10;
-          } else if (_gyroValues[1] < GlobalVariables.D4Crab_Threshold) {
+          } else if (_gyroValues[1] > GlobalVariables.D4Crab_Threshold) {
             SetTxData.Button_Pedal = 11;
           } else {}
         }
