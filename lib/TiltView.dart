@@ -444,63 +444,67 @@ class _TiltViewState extends State<TiltView> {
                                 AnimationVariables.isArrowshow)
                               Positioned(
                                 left: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
-                                child: ShaderMask(
-                                  shaderCallback: (Rect bounds) {
-                                    return LinearGradient(
-                                      begin: Alignment(
-                                          -1 -
-                                              AnimationVariables
-                                                  .streatanimationController
-                                                  .value,
-                                          0),
-                                      end: Alignment(
-                                          1 -
-                                              AnimationVariables
-                                                  .streatanimationController
-                                                  .value,
-                                          0),
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.white,
-                                        Colors.transparent,
-                                      ],
-                                    ).createShader(bounds);
-                                  },
-                                  blendMode: BlendMode.modulate,
-                                  child: Icon(Icons.navigate_before,
-                                      size: (Size_Width * 0.2)),
-                                ),
+                                child: Icon(Icons.navigate_before,
+                                    size: (Size_Width * 0.2)),
+                                // child: ShaderMask(
+                                //   shaderCallback: (Rect bounds) {
+                                //     return LinearGradient(
+                                //       begin: Alignment(
+                                //           -1 -
+                                //               AnimationVariables
+                                //                   .streatanimationController
+                                //                   .value,
+                                //           0),
+                                //       end: Alignment(
+                                //           1 -
+                                //               AnimationVariables
+                                //                   .streatanimationController
+                                //                   .value,
+                                //           0),
+                                //       colors: [
+                                //         Colors.transparent,
+                                //         Colors.white,
+                                //         Colors.transparent,
+                                //       ],
+                                //     ).createShader(bounds);
+                                //   },
+                                //   blendMode: BlendMode.modulate,
+                                //   child: Icon(Icons.navigate_before,
+                                //       size: (Size_Width * 0.2)),
+                                // ),
                               )
                             else if (!AnimationVariables.isArrowVisible &
                                 AnimationVariables.isArrowshow)
                               Positioned(
                                 right: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
-                                child: ShaderMask(
-                                  shaderCallback: (Rect bounds) {
-                                    return LinearGradient(
-                                      begin: Alignment(
-                                          -1 +
-                                              AnimationVariables
-                                                  .streatanimationController
-                                                  .value,
-                                          0),
-                                      end: Alignment(
-                                          1 +
-                                              AnimationVariables
-                                                  .streatanimationController
-                                                  .value,
-                                          0),
-                                      colors: [
-                                        Colors.transparent,
-                                        Colors.white,
-                                        Colors.transparent,
-                                      ],
-                                    ).createShader(bounds);
-                                  },
-                                  blendMode: BlendMode.modulate,
-                                  child: Icon(Icons.navigate_next,
-                                      size: (Size_Width * 0.2)),
-                                ),
+                                child: Icon(Icons.navigate_next,
+                                    size: (Size_Width * 0.2)),
+                                // child: ShaderMask(
+                                //   shaderCallback: (Rect bounds) {
+                                //     return LinearGradient(
+                                //       begin: Alignment(
+                                //           -1 +
+                                //               AnimationVariables
+                                //                   .streatanimationController
+                                //                   .value,
+                                //           0),
+                                //       end: Alignment(
+                                //           1 +
+                                //               AnimationVariables
+                                //                   .streatanimationController
+                                //                   .value,
+                                //           0),
+                                //       colors: [
+                                //         Colors.transparent,
+                                //         Colors.white,
+                                //         Colors.transparent,
+                                //       ],
+                                //     ).createShader(bounds);
+                                //   },
+                                //   blendMode: BlendMode.modulate,
+                                //   child: Icon(Icons.navigate_next,
+                                //       size: (Size_Width * 0.2)),
+                                // ),
                               ),
                             if (AnimationVariables.isRotateVisible &
                                 AnimationVariables.isRotateshow)

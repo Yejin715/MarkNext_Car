@@ -42,8 +42,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
     _loadThresholdValues();
     Wakelock.enable();
-    SetTxData.TxData = List<int>.filled(15, 0);
-    // SetTxData.TxData = List<int>.filled(27, 0);
+    // SetTxData.TxData = List<int>.filled(15, 0);
+    SetTxData.TxData = List<int>.filled(27, 0);
     SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();

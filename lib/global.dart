@@ -7,8 +7,8 @@ import 'dart:typed_data';
 import './UDP.dart';
 
 class SetTxData {
-  static List<int> TxData = List<int>.filled(15, 0);
-  // static List<int> TxData = List<int>.filled(27, 0);
+  // static List<int> TxData = List<int>.filled(15, 0);
+  static List<int> TxData = List<int>.filled(27, 0);
 
   static int Msg2_SBW_Cmd_Tx = 0;
   static int Accel_Pedal_Angle = 0;
