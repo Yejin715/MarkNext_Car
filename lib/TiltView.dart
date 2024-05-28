@@ -377,6 +377,7 @@ class _TiltViewState extends State<TiltView> {
 
                                     return GestureDetector(
                                       onTap: () {
+                                        print('${row}, ${col}');
                                         setState(() {
                                           if ((row == 5) & (col == 5)) {
                                             GraphicVariables.resetColor();

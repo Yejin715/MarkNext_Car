@@ -3,12 +3,13 @@ import 'package:connectivity/connectivity.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:typed_data';
+import 'dart:math';
 
 import './UDP.dart';
 
 class SetTxData {
-  static List<int> TxData = List<int>.filled(15, 0);
-  // static List<int> TxData = List<int>.filled(27, 0);
+  // static List<int> TxData = List<int>.filled(15, 0);
+  static List<int> TxData = List<int>.filled(27, 0);
 
   static int Msg2_SBW_Cmd_Tx = 0;
   static int Accel_Pedal_Angle = 0;
@@ -66,17 +67,18 @@ class GraphicVariables {
     GraphicVariables.circlepoint = null;
   }
 
-  static void setPivot(int xvalue, int yvalue, double height) {
-    GraphicVariables.selectColor11x11[yvalue][xvalue] = Colors.red;
+  static void setPivot(int yvalue, int xvalue, double height) {
+    GraphicVariables.selectColor11x11[xvalue][yvalue] = Colors.red;
     SetTxData.Button_Pedal = 7;
-    SetTxData.Pivot_Rcx = -(yvalue - 5);
-    SetTxData.Pivot_Rcy = (xvalue - 5);
+    SetTxData.Pivot_Rcx = -(xvalue - 5);
+    SetTxData.Pivot_Rcy = (yvalue - 5);
     GraphicVariables.circlepoint = Offset(
-        (xvalue * height) + (height / 2), (yvalue * height) + (height / 2));
+        (yvalue * height) + (height / 2), (xvalue * height) + (height / 2));
   }
 }
 
 class AnimationVariables {
+  static bool isSendPressed = false;
   static bool isRotateVisible = false;
   static bool isRotateshow = false;
   static bool isArrowshow = false;

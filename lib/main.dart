@@ -40,8 +40,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
     _loadThresholdValues();
     Wakelock.enable();
-    SetTxData.TxData = List<int>.filled(15, 0);
-    // SetTxData.TxData = List<int>.filled(27, 0);
+    // SetTxData.TxData = List<int>.filled(15, 0);
+    SetTxData.TxData = List<int>.filled(27, 0);
     SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();
@@ -102,6 +102,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
         SetTxData.Accel_Z = (event.z).toInt();
         setState(() {
           _accelerometerValues = [event.x, event.y, event.z];
+          // print(_accelerometerValues);
           //yejin table = _accelerometerValues[0], another table = _accelerometerValues[1]
           double temp = _accelerometerValues[1] * -30;
           double tilt_angle = _accelerometerValues[1] * -9;
@@ -316,154 +317,363 @@ class _Main extends State<Main> with TickerProviderStateMixin {
           ),
         ),
         floatingActionButton: GlobalVariables.showContainer
-            ? SpeedDial(
-                icon: Icons.send,
-                activeIcon: Icons.close,
-                visible: true,
-                curve: Curves.bounceIn,
-                backgroundColor: const Color.fromARGB(255, 27, 62, 94),
-                children: [
-                    SpeedDialChild(
-                      labelWidget: Container(
-                        width: (Size_Width * 0.15),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF424242),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          'Left Crab',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Size_Width * 0.015,
-                            color: Color(0xFFF3F3F3),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        // print("Left Crab Button");
-                        SetTxData.Button_Pedal = 4;
-                      },
-                    ),
-                    SpeedDialChild(
-                      labelWidget: Container(
-                        width: (Size_Width * 0.15),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF424242),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          'Right Crab',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Size_Width * 0.015,
-                            color: Color(0xFFF3F3F3),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        // print("Right Crab Button");
-                        SetTxData.Button_Pedal = 5;
-                      },
-                    ),
-                    SpeedDialChild(
-                      labelWidget: Container(
-                        width: (Size_Width * 0.15),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF424242),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          'Zero Spin',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Size_Width * 0.015,
-                            color: Color(0xFFF3F3F3),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        // print("Zero Spin Button");
-                        SetTxData.Button_Pedal = 6;
-                      },
-                    ),
-                    SpeedDialChild(
-                      labelWidget: Container(
-                        width: (Size_Width * 0.15),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF424242),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          'Pivot',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Size_Width * 0.015,
-                            color: Color(0xFFF3F3F3),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        // print("Pivot Button");
-                        SetTxData.Button_Pedal = 7;
-                      },
-                    ),
-                    SpeedDialChild(
-                      labelWidget: Container(
-                        width: (Size_Width * 0.15),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF424242),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          'FWS',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Size_Width * 0.015,
-                            color: Color(0xFFF3F3F3),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        // print("FWS Button");
-                        SetTxData.Button_Pedal = 10;
-                      },
-                    ),
-                    SpeedDialChild(
-                      labelWidget: Container(
-                        width: (Size_Width * 0.15),
-                        padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                        alignment: Alignment.center,
-                        decoration: BoxDecoration(
-                          color: Color(0xFF424242),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Text(
-                          'D4',
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: Size_Width * 0.015,
-                            color: Color(0xFFF3F3F3),
-                          ),
-                        ),
-                      ),
-                      onTap: () {
-                        // print("D4 Button");
-                        SetTxData.Button_Pedal = 11;
-                      },
-                    ),
-                  ])
+            ? Builder(
+                builder: (context) => FloatingActionButton(
+                  onPressed: () {
+                    AnimationVariables.isSendPressed = true; // Toggle isPressed
+                    print(AnimationVariables.isSendPressed);
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true, // 이 부분을 true로 설정합니다.
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Send Message"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                        child: buildButton(context, Size_Width,
+                                            "Left Crab", 4),
+                                      ),
+                                      Container(
+                                        margin:
+                                            EdgeInsets.fromLTRB(10, 0, 10, 0),
+                                        child: buildButton(context, Size_Width,
+                                            "Right Crab", 5),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                        child: buildButton(
+                                            context, Size_Width, "FWS", 10),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                        child: buildButton(
+                                            context, Size_Width, "D4", 11),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                        child: buildButton(context, Size_Width,
+                                            "Zero Spin", 6),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                        child: buildButton(
+                                            context, Size_Width, "Pivot", 7),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                        child: buildButton(
+                                            context, Size_Width, "RP", 8),
+                                      ),
+                                      Container(
+                                        margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                        child: buildButton(
+                                            context, Size_Width, "IP", 9),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).then((value) {
+                      setState(() {
+                        AnimationVariables.isSendPressed = false;
+                      });
+                    });
+                  },
+                  child: Icon(AnimationVariables.isSendPressed
+                      ? Icons.close
+                      : Icons.send),
+                ),
+              )
             : null,
+        // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+        // floatingActionButton: GlobalVariables.showContainer
+        //     ? SpeedDial(
+        //         icon: Icons.send,
+        //         activeIcon: Icons.close,
+        //         visible: true,
+        //         curve: Curves.bounceIn,
+        //         backgroundColor: const Color.fromARGB(255, 27, 62, 94),
+        //         children: [
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'Left Crab',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("Left Crab Button");
+        //                 SetTxData.Button_Pedal = 4;
+        //               },
+        //             ),
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'Right Crab',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("Right Crab Button");
+        //                 SetTxData.Button_Pedal = 5;
+        //               },
+        //             ),
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'Zero Spin',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("Zero Spin Button");
+        //                 SetTxData.Button_Pedal = 6;
+        //               },
+        //             ),
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'Pivot',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("Pivot Button");
+        //                 SetTxData.Button_Pedal = 7;
+        //               },
+        //             ),
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'RP',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("D4 Button");
+        //                 SetTxData.Button_Pedal = 8;
+        //               },
+        //             ),
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'IP',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("FWS Button");
+        //                 SetTxData.Button_Pedal = 9;
+        //               },
+        //             ),
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'FWS',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("FWS Button");
+        //                 SetTxData.Button_Pedal = 10;
+        //               },
+        //             ),
+        //             SpeedDialChild(
+        //               labelWidget: Container(
+        //                 width: (Size_Width * 0.15),
+        //                 padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+        //                 alignment: Alignment.center,
+        //                 decoration: BoxDecoration(
+        //                   color: Color(0xFF424242),
+        //                   borderRadius: BorderRadius.circular(8.0),
+        //                 ),
+        //                 child: Text(
+        //                   'D4',
+        //                   style: TextStyle(
+        //                     fontWeight: FontWeight.w600,
+        //                     fontSize: Size_Width * 0.015,
+        //                     color: Color(0xFFF3F3F3),
+        //                   ),
+        //                 ),
+        //               ),
+        //               onTap: () {
+        //                 // print("D4 Button");
+        //                 SetTxData.Button_Pedal = 11;
+        //               },
+        //             ),
+        //           ])
+        //     : null,
       ),
     );
   }
+}
+
+Widget buildButton(
+    BuildContext context, double Size_Width, String text, int num) {
+  return ElevatedButton(
+    onPressed: () {
+      SetTxData.Button_Pedal = num;
+      print(text);
+      Navigator.pop(context); // Close the AlertDialog
+      showOverlayMessage(context, text);
+    },
+    child: Container(
+      width: (Size_Width * 0.07),
+      alignment: Alignment.center,
+      child: Text(
+        text,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: Size_Width * 0.015,
+          color: Color(0xFFF3F3F3),
+        ),
+      ),
+    ),
+  );
+}
+
+void showOverlayMessage(BuildContext context, String message) {
+  OverlayEntry overlayEntry;
+  overlayEntry = OverlayEntry(
+    builder: (context) => Positioned.fill(
+      child: Material(
+        color: Colors.transparent,
+        child: Center(
+          child: Container(
+            padding: EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              color: Colors.black.withOpacity(0.8),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Text(
+              message,
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
+
+  Overlay.of(context).insert(overlayEntry);
+
+  // 일정 시간 후에 Overlay를 제거합니다.
+  Future.delayed(Duration(milliseconds: 700), () {
+    overlayEntry.remove();
+  });
 }
