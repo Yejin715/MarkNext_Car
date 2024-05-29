@@ -9,6 +9,7 @@ import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:motion_sensors/motion_sensors.dart';
 
 import './global.dart';
 import './TiltView.dart';
@@ -40,8 +41,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
     _loadThresholdValues();
     Wakelock.enable();
-    SetTxData.TxData = List<int>.filled(15, 0);
-    // SetTxData.TxData = List<int>.filled(27, 0);
+    // SetTxData.TxData = List<int>.filled(15, 0);
+    SetTxData.TxData = List<int>.filled(27, 0);
     SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();
@@ -92,6 +93,104 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     });
   }
 
+  // void SensorsPlusValue() {
+  //   // 중력을 반영하지 않은 순수 사용자의 힘에 의한 가속도계 값
+  //   motionSensors.accelerometer.listen((AccelerometerEvent event) {
+  //     setState(() {
+  //       SetTxData.Accel_X = (event.x).toInt();
+  //       SetTxData.Accel_Y = (event.y).toInt();
+  //       SetTxData.Accel_Z = (event.z).toInt();
+  //       setState(() {
+  //         _accelerometerValues = [event.x, event.y, event.z];
+  //         // print(_accelerometerValues);
+  //         //yejin table = _accelerometerValues[0], another table = _accelerometerValues[1]
+  //         double temp = _accelerometerValues[1] * -30;
+  //         double tilt_angle = _accelerometerValues[1] * -9;
+  //         if ((SetTxData.Button_Pedal == 6) & (GlobalVariables.showContainer)) {
+  //           if (tilt_angle >= 15) {
+  //             AnimationVariables.isRotateVisible = false;
+  //             if (!AnimationVariables.isRotateshow) {
+  //               AnimationVariables.isRotateshow = true;
+  //               AnimationVariables.rotateanimationController.repeat();
+  //             }
+  //           } else if (tilt_angle <= -15) {
+  //             AnimationVariables.isRotateVisible = true;
+  //             if (!AnimationVariables.isRotateshow) {
+  //               AnimationVariables.isRotateshow = true;
+  //               AnimationVariables.rotateanimationController.repeat();
+  //             }
+  //           } else {
+  //             if (AnimationVariables.isRotateshow) {
+  //               AnimationVariables.isRotateshow = false;
+  //               AnimationVariables.rotateanimationController.stop();
+  //             }
+  //           }
+  //         } else {
+  //           if (AnimationVariables.isRotateshow) {
+  //             AnimationVariables.isRotateshow = false;
+  //             AnimationVariables.rotateanimationController.stop();
+  //           }
+  //         }
+
+  //         if (temp >= 300) {
+  //           SetTxData.Msg2_SBW_Cmd_Tx = 300;
+  //         } else if (temp <= -300) {
+  //           SetTxData.Msg2_SBW_Cmd_Tx = -300;
+  //         } else {
+  //           SetTxData.Msg2_SBW_Cmd_Tx = temp.toInt();
+  //         }
+  //       });
+  //     });
+  //   });
+
+  //   // 자이로 값
+  //   motionSensors.gyroscope.listen((GyroscopeEvent event) {
+  //     SetTxData.Gyro_P = (event.x / 0.01).toInt();
+  //     SetTxData.Gyro_R = (event.y / 0.01).toInt();
+  //     SetTxData.Gyro_Y = (event.z / 0.01).toInt();
+  //     setState(() {
+  //       _gyroValues = [event.x, event.y, event.z];
+
+  //       if (GlobalVariables.showContainer) {
+  //         if ((_gyroValues[0] < GlobalVariables.LeftCrab_Threshold)) {
+  //           SetTxData.Button_Pedal = 4;
+  //           AnimationVariables.isArrowVisible = true;
+  //           if (!AnimationVariables.isArrowshow) {
+  //             AnimationVariables.isArrowshow = true;
+  //             // AnimationVariables.streatanimationController.repeat();
+  //           }
+  //         } else if ((_gyroValues[0] > GlobalVariables.RightCrab_Threshold)) {
+  //           SetTxData.Button_Pedal = 5;
+  //           AnimationVariables.isArrowVisible = false;
+  //           if (!AnimationVariables.isArrowshow) {
+  //             AnimationVariables.isArrowshow = true;
+  //             // AnimationVariables.streatanimationController.repeat();
+  //           }
+  //         } else {}
+
+  //         if (_gyroValues[1] < GlobalVariables.FWS_Threshold) {
+  //           SetTxData.Button_Pedal = 10;
+  //         } else if (_gyroValues[1] > GlobalVariables.D4_Threshold) {
+  //           SetTxData.Button_Pedal = 11;
+  //         } else {}
+  //       }
+  //     });
+  //   });
+
+  //   motionSensors.isOrientationAvailable().then((available) {
+  //     if (available) {
+  //       motionSensors.orientation.listen((OrientationEvent event) {
+  //         setState(() {
+  //           GlobalVariables.Ori_Yaw = event.yaw;
+  //           GlobalVariables.Ori_Pitch = event.pitch;
+  //           GlobalVariables.Ori_Roll = event.roll;
+  //           print(
+  //               '${GlobalVariables.Ori_Yaw}, ${GlobalVariables.Ori_Pitch}, ${GlobalVariables.Ori_Roll}');
+  //         });
+  //       });
+  //     }
+  //   });
+  // }
   void SensorsPlusValue() {
     // 중력을 반영하지 않은 순수 사용자의 힘에 의한 가속도계 값
     accelerometerEventStream(samplingPeriod: SensorInterval.gameInterval)

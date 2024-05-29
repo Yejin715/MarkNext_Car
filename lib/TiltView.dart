@@ -63,12 +63,22 @@ class _TiltViewState extends State<TiltView> {
                       });
                     },
                     onVerticalDragEnd: (details) {
+                      // 드래그 종료됨
                       setState(() {
-                        AnimationVariables.isScrollDragging = false; // 드래그 종료됨
-                        ThrottleBarvalue = 0;
-                        SetTxData.Accel_Pedal_Angle = mapValue(ThrottleBarvalue,
-                                0, (Size_Height * 0.56), 0, 100)
-                            .toInt();
+                        AnimationVariables.isScrollDragging = false;
+                      });
+                      // 3초 후에 값을 0으로 설정
+                      Future.delayed(Duration(seconds: 3), () {
+                        setState(() {
+                          ThrottleBarvalue = 0;
+                          SetTxData.Accel_Pedal_Angle = mapValue(
+                            ThrottleBarvalue,
+                            0,
+                            (Size_Height * 0.56),
+                            0,
+                            100,
+                          ).toInt();
+                        });
                       });
                     },
                     child: Container(

@@ -8,8 +8,8 @@ import 'dart:math';
 import './UDP.dart';
 
 class SetTxData {
-  static List<int> TxData = List<int>.filled(15, 0);
-  // static List<int> TxData = List<int>.filled(27, 0);
+  // static List<int> TxData = List<int>.filled(15, 0);
+  static List<int> TxData = List<int>.filled(27, 0);
 
   static int Msg2_SBW_Cmd_Tx = 0;
   static int Accel_Pedal_Angle = 0;
@@ -98,6 +98,9 @@ class AnimationVariables {
 }
 
 class GlobalVariables {
+  static double Ori_Yaw = 0.0;
+  static double Ori_Pitch = 0.0;
+  static double Ori_Roll = 0.0;
   static bool showContainer = false; // 클래스에 포함된 변수
   static bool isWifiConnected = false;
   static bool isUDPConnected = false;
@@ -133,8 +136,8 @@ class GlobalVariables {
     "Right Crab",
     "Zero Spin",
     "PIVOT",
-    "Parking",
-    "Parking",
+    "RP",
+    "IP",
     "FWS",
     "D4",
     "Parking"
@@ -158,8 +161,6 @@ class TimerMonitor {
         case 2:
         case 3:
           GraphicVariables.resetColor();
-          SetTxData.Pivot_Rcx = 0;
-          SetTxData.Pivot_Rcy = 0;
 
           if (AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = false;
@@ -169,8 +170,6 @@ class TimerMonitor {
         case 4:
           AnimationVariables.drive_selectedButtonIndex = -1;
           GraphicVariables.resetColor();
-          SetTxData.Pivot_Rcx = 0;
-          SetTxData.Pivot_Rcy = 0;
           AnimationVariables.isArrowVisible = true;
           if (!AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = true;
@@ -180,8 +179,6 @@ class TimerMonitor {
         case 5:
           AnimationVariables.drive_selectedButtonIndex = -1;
           GraphicVariables.resetColor();
-          SetTxData.Pivot_Rcx = 0;
-          SetTxData.Pivot_Rcy = 0;
           AnimationVariables.isArrowVisible = false;
           if (!AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = true;
@@ -199,8 +196,6 @@ class TimerMonitor {
         default:
           AnimationVariables.drive_selectedButtonIndex = -1;
           GraphicVariables.resetColor();
-          SetTxData.Pivot_Rcx = 0;
-          SetTxData.Pivot_Rcy = 0;
 
           if (AnimationVariables.isArrowshow) {
             AnimationVariables.isArrowshow = false;
