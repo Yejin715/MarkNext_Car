@@ -40,8 +40,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
     _loadThresholdValues();
     Wakelock.enable();
-    // SetTxData.TxData = List<int>.filled(15, 0);
-    SetTxData.TxData = List<int>.filled(27, 0);
+    SetTxData.TxData = List<int>.filled(15, 0);
+    // SetTxData.TxData = List<int>.filled(27, 0);
     SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();
@@ -630,7 +630,7 @@ Widget buildButton(
       SetTxData.Button_Pedal = num;
       print(text);
       Navigator.pop(context); // Close the AlertDialog
-      showOverlayMessage(context, text);
+      showOverlayMessage(context, Size_Width, text);
     },
     child: Container(
       width: (Size_Width * 0.07),
@@ -647,7 +647,8 @@ Widget buildButton(
   );
 }
 
-void showOverlayMessage(BuildContext context, String message) {
+void showOverlayMessage(
+    BuildContext context, double Size_Width, String message) {
   OverlayEntry overlayEntry;
   overlayEntry = OverlayEntry(
     builder: (context) => Positioned.fill(
@@ -662,7 +663,11 @@ void showOverlayMessage(BuildContext context, String message) {
             ),
             child: Text(
               message,
-              style: TextStyle(color: Colors.white),
+              style: TextStyle(
+                fontWeight: FontWeight.w600,
+                fontSize: Size_Width * 0.02,
+                color: Color(0xFFF3F3F3),
+              ),
             ),
           ),
         ),
