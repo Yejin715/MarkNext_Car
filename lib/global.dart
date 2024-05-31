@@ -97,10 +97,60 @@ class AnimationVariables {
   static bool isControlSelect = false;
 }
 
+class MessageView {
+  static void showOverlayMessage(
+      BuildContext context, double Size_Width, String message) {
+    OverlayEntry overlayEntry;
+    overlayEntry = OverlayEntry(
+      builder: (context) => Positioned.fill(
+        child: Material(
+          color: Colors.transparent,
+          child: Center(
+            child: Container(
+              padding: EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.black.withOpacity(0.8),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                message,
+                style: TextStyle(
+                  fontWeight: FontWeight.w600,
+                  fontSize: Size_Width * 0.02,
+                  color: Color(0xFFF3F3F3),
+                ),
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+
+    Overlay.of(context).insert(overlayEntry);
+
+    // 일정 시간 후에 Overlay를 제거합니다.
+    Future.delayed(Duration(milliseconds: 700), () {
+      overlayEntry.remove();
+    });
+  }
+}
+
 class GlobalVariables {
-  static double Ori_Yaw = 0.0;
-  static double Ori_Pitch = 0.0;
-  static double Ori_Roll = 0.0;
+  static int timer_duration = 50;
+  static List<double> orientation = [0.0, 0.0, 0.0];
+  static List<double> gyroorientation = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
+  static List<double> accorientation = [0.0, 0.0, 0.0];
+  static List<double> gyroangle_x = [0, 0, 0];
+  static List<double> gyroangle_xx = [0, 0, 0];
+  static List<double> gyroangle_y = [0, 0, 0];
+  static List<double> gyroangle_yy = [0, 0, 0];
+  static List<double> gyroangle_yyy = [0, 0, 0];
+  static List<double> accangle_x = [0, 0, 0];
+  static List<double> accangle_xx = [0, 0, 0];
+  static List<double> accangle_y = [0, 0, 0];
+  static List<double> accangle_yy = [0, 0, 0];
+  static List<double> accelerometerValues = [0.0, 0.0, 0.0];
+  static List<double> gyroValues = [0.0, 0.0, 0.0];
   static bool showContainer = false; // 클래스에 포함된 변수
   static bool isWifiConnected = false;
   static bool isUDPConnected = false;
@@ -151,6 +201,7 @@ class TimerMonitor {
 
   void startMonitoring() {
     Timer.periodic(Duration(milliseconds: 50), (timer) async {
+      _calculateAngles();
       // Check Wifi
       final connectivityResult = await Connectivity().checkConnectivity();
       final isWifiConnected = connectivityResult == ConnectivityResult.wifi;
@@ -220,5 +271,136 @@ class TimerMonitor {
 
   void dispose() {
     _wifiStreamController.close();
+  }
+
+  void _calculateAngles() {
+    double dt = 0.05;
+    List<double> low_filter_num = [
+      0.0055,
+      0.0111,
+      0.0055
+    ]; // 2차 저역 통과 필터의 분자 계수
+    List<double> low_filter_den = [1.0, -1.7786, 0.8008]; // 2차 저역 통과 필터의 분모 계수
+    List<double> high_filter_num = [
+      0.8949,
+      -1.7897,
+      0.8949
+    ]; // 2차 고역 통과 필터의 분자 계수
+    List<double> high_filter_den = [1.0, -1.7786, 0.8008]; // 2차 고역 통과 필터의 분모 계수
+
+// 자이로스코프 각속도 데이터를 라디안으로 변환
+    GlobalVariables.gyroorientation[0] +=
+        (GlobalVariables.gyroValues[0] * dt) * (180 / pi);
+    GlobalVariables.gyroorientation[1] +=
+        (GlobalVariables.gyroValues[1] * dt) * (180 / pi);
+    GlobalVariables.gyroorientation[2] +=
+        (GlobalVariables.gyroValues[2] * dt) * (180 / pi);
+
+// 2차 고역 통과 필터의 필터링 과정
+    GlobalVariables.gyroorientation[3] =
+        high_filter_num[0] * GlobalVariables.gyroorientation[0] +
+            high_filter_num[1] * GlobalVariables.gyroangle_x[0] +
+            high_filter_num[2] * GlobalVariables.gyroangle_xx[0] -
+            high_filter_den[1] * GlobalVariables.gyroangle_y[0] -
+            high_filter_den[2] * GlobalVariables.gyroangle_yy[0];
+    GlobalVariables.gyroorientation[4] =
+        high_filter_num[0] * GlobalVariables.gyroorientation[1] +
+            high_filter_num[1] * GlobalVariables.gyroangle_x[1] +
+            high_filter_num[2] * GlobalVariables.gyroangle_xx[1] -
+            high_filter_den[1] * GlobalVariables.gyroangle_y[1] -
+            high_filter_den[2] * GlobalVariables.gyroangle_yy[1];
+    GlobalVariables.gyroorientation[5] =
+        high_filter_num[0] * GlobalVariables.gyroorientation[2] +
+            high_filter_num[1] * GlobalVariables.gyroangle_x[2] +
+            high_filter_num[2] * GlobalVariables.gyroangle_xx[2] -
+            high_filter_den[1] * GlobalVariables.gyroangle_y[2] -
+            high_filter_den[2] * GlobalVariables.gyroangle_yy[2];
+
+    GlobalVariables.gyroangle_x = [
+      GlobalVariables.gyroorientation[0],
+      GlobalVariables.gyroorientation[1],
+      GlobalVariables.gyroorientation[2]
+    ];
+    GlobalVariables.gyroangle_xx = [
+      GlobalVariables.gyroangle_x[0],
+      GlobalVariables.gyroangle_x[1],
+      GlobalVariables.gyroangle_x[2]
+    ];
+    GlobalVariables.gyroangle_y = [
+      GlobalVariables.gyroorientation[3],
+      GlobalVariables.gyroorientation[4],
+      GlobalVariables.gyroorientation[5]
+    ];
+    GlobalVariables.gyroangle_yy = [
+      GlobalVariables.gyroangle_y[0],
+      GlobalVariables.gyroangle_y[1],
+      GlobalVariables.gyroangle_y[2]
+    ];
+
+// 가속도 데이터를 이용한 Roll, Pitch 계산
+    double accelRoll = (atan2(
+            GlobalVariables.accelerometerValues[0],
+            sqrt(GlobalVariables.accelerometerValues[1] *
+                    GlobalVariables.accelerometerValues[1] +
+                GlobalVariables.accelerometerValues[2] *
+                    GlobalVariables.accelerometerValues[2]))) *
+        (180 / pi);
+    double accelPitch = (atan2(
+            GlobalVariables.accelerometerValues[1],
+            sqrt(GlobalVariables.accelerometerValues[0] *
+                    GlobalVariables.accelerometerValues[0] +
+                GlobalVariables.accelerometerValues[2] *
+                    GlobalVariables.accelerometerValues[2]))) *
+        (180 / pi);
+    double accelYaw = (atan2(
+            sqrt(GlobalVariables.accelerometerValues[0] *
+                    GlobalVariables.accelerometerValues[0] +
+                GlobalVariables.accelerometerValues[1] *
+                    GlobalVariables.accelerometerValues[1]),
+            GlobalVariables.accelerometerValues[2])) *
+        (180 / pi);
+
+// 2차 저역 통과 필터의 필터링 과정
+    GlobalVariables.accorientation[0] = low_filter_num[0] * accelRoll +
+        low_filter_num[1] * GlobalVariables.accangle_x[0] +
+        low_filter_num[2] * GlobalVariables.accangle_xx[0] -
+        low_filter_den[1] * GlobalVariables.accangle_y[0] -
+        low_filter_den[2] * GlobalVariables.accangle_yy[0];
+    GlobalVariables.accorientation[1] = low_filter_num[0] * accelPitch +
+        low_filter_num[1] * GlobalVariables.accangle_x[1] +
+        low_filter_num[2] * GlobalVariables.accangle_xx[1] -
+        low_filter_den[1] * GlobalVariables.accangle_y[1] -
+        low_filter_den[2] * GlobalVariables.accangle_yy[1];
+    GlobalVariables.accorientation[2] = low_filter_num[0] * accelYaw +
+        low_filter_num[1] * GlobalVariables.accangle_x[2] +
+        low_filter_num[2] * GlobalVariables.accangle_xx[2] -
+        low_filter_den[1] * GlobalVariables.accangle_y[2] -
+        low_filter_den[2] * GlobalVariables.accangle_yy[2];
+
+    GlobalVariables.accangle_x = [accelRoll, accelPitch, accelYaw];
+    GlobalVariables.accangle_xx = [
+      GlobalVariables.accangle_x[0],
+      GlobalVariables.accangle_x[1],
+      GlobalVariables.accangle_x[2]
+    ];
+    GlobalVariables.accangle_y = [
+      GlobalVariables.accorientation[0],
+      GlobalVariables.accorientation[1],
+      GlobalVariables.accorientation[2]
+    ];
+    GlobalVariables.accangle_yy = [
+      GlobalVariables.accangle_y[0],
+      GlobalVariables.accangle_y[1],
+      GlobalVariables.accangle_y[2]
+    ];
+
+    GlobalVariables.orientation[0] =
+        GlobalVariables.accorientation[0] + GlobalVariables.gyroorientation[3];
+    GlobalVariables.orientation[1] =
+        GlobalVariables.accorientation[1] + GlobalVariables.gyroorientation[4];
+    GlobalVariables.orientation[2] = GlobalVariables
+        .gyroorientation[5]; //  GlobalVariables.accorientation[2]
+    // print(
+    //     '${GlobalVariables.orientation[0].toStringAsFixed(2)}, ${GlobalVariables.orientation[1].toStringAsFixed(2)}, ${GlobalVariables.orientation[2].toStringAsFixed(2)}   :   ${GlobalVariables.accorientation[0].toStringAsFixed(2)}, ${GlobalVariables.accorientation[1].toStringAsFixed(2)}, ${GlobalVariables.accorientation[2].toStringAsFixed(2)}   :   ${GlobalVariables.gyroorientation[3].toStringAsFixed(2)}, ${GlobalVariables.gyroorientation[4].toStringAsFixed(2)}, ${GlobalVariables.gyroorientation[5].toStringAsFixed(2)}');
   }
 }

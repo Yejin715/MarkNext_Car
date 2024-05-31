@@ -3,6 +3,8 @@ import 'dart:ui';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
+import 'package:haptic_feedback/haptic_feedback.dart';
 import 'dart:math';
 
 import './main.dart';
@@ -20,6 +22,9 @@ class TiltView extends StatefulWidget {
 
 class _TiltViewState extends State<TiltView> {
   double ThrottleBarvalue = 0.0; // 쓰로틀 바의 현재 값
+  double Pre_ThrottleBarvalue = 0.0; // 쓰로틀 바의 현재 값
+  DateTime dragStartTime = DateTime.now();
+  bool drag_fix = false;
 
   @override
   Widget build(BuildContext context) {
@@ -47,6 +52,11 @@ class _TiltViewState extends State<TiltView> {
                   height: (Size_Height * 0.7),
                   alignment: Alignment.center,
                   child: GestureDetector(
+                    onVerticalDragStart: (details) {
+                      drag_fix = false;
+                      Pre_ThrottleBarvalue = 0;
+                      Haptics.vibrate(HapticsType.light);
+                    },
                     onVerticalDragUpdate: (details) {
                       setState(() {
                         AnimationVariables.isScrollDragging =
@@ -60,6 +70,21 @@ class _TiltViewState extends State<TiltView> {
                         SetTxData.Accel_Pedal_Angle = mapValue(ThrottleBarvalue,
                                 0, (Size_Height * 0.56), 0, 100)
                             .toInt();
+                        if (((Pre_ThrottleBarvalue - 5) > ThrottleBarvalue) |
+                            (ThrottleBarvalue > (Pre_ThrottleBarvalue + 5))) {
+                          drag_fix = false;
+                          dragStartTime = DateTime.now();
+                          Pre_ThrottleBarvalue = ThrottleBarvalue;
+                        } else {
+                          Duration dragDuration =
+                              DateTime.now().difference(dragStartTime);
+                          if (dragDuration.inSeconds > 2) {
+                            if (!drag_fix) {
+                              Haptics.vibrate(HapticsType.error);
+                            }
+                            drag_fix = true;
+                          }
+                        }
                       });
                     },
                     onVerticalDragEnd: (details) {
@@ -67,8 +92,7 @@ class _TiltViewState extends State<TiltView> {
                       setState(() {
                         AnimationVariables.isScrollDragging = false;
                       });
-                      // 3초 후에 값을 0으로 설정
-                      Future.delayed(Duration(seconds: 3), () {
+                      if (!drag_fix) {
                         setState(() {
                           ThrottleBarvalue = 0;
                           SetTxData.Accel_Pedal_Angle = mapValue(
@@ -79,7 +103,7 @@ class _TiltViewState extends State<TiltView> {
                             100,
                           ).toInt();
                         });
-                      });
+                      }
                     },
                     child: Container(
                       width: (Size_Width * 0.5),
@@ -195,7 +219,7 @@ class _TiltViewState extends State<TiltView> {
                                 child: AspectRatio(
                               aspectRatio: 1 / 3,
                               child: Image.asset(
-                                'assets/images/car_removebg_preview_1.png',
+                                'assets/images/car.png',
                               ),
                             )),
                             GridView.builder(
@@ -390,6 +414,7 @@ class _TiltViewState extends State<TiltView> {
                                         print('${row}, ${col}');
                                         setState(() {
                                           if ((row == 5) & (col == 5)) {
+                                            Haptics.vibrate(HapticsType.light);
                                             GraphicVariables.resetColor();
                                             GraphicVariables
                                                     .selectColor11x11[row]
@@ -402,6 +427,8 @@ class _TiltViewState extends State<TiltView> {
                                               case 0:
                                               case 10:
                                                 if ((col < 2) | (col > 8)) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -410,6 +437,8 @@ class _TiltViewState extends State<TiltView> {
                                               case 1:
                                               case 9:
                                                 if ((col < 3) | (col > 7)) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -420,6 +449,8 @@ class _TiltViewState extends State<TiltView> {
                                               case 7:
                                               case 8:
                                                 if ((col < 4) | (col > 6)) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -429,6 +460,8 @@ class _TiltViewState extends State<TiltView> {
                                               case 5:
                                               case 6:
                                                 if (col != 5) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -632,6 +665,7 @@ class _TiltViewState extends State<TiltView> {
                                 alignment: Alignment.center,
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    Haptics.vibrate(HapticsType.light);
                                     // print('Reset Button Click');
                                     GraphicVariables.resetColor();
                                     SetTxData.Pivot_Rcx = 0;
@@ -835,7 +869,7 @@ class _TiltViewState extends State<TiltView> {
               Container(
                 width: (Size_Width * 0.15),
                 alignment: Alignment(0.0, 0.0),
-                child: Image.asset('assets/images/logo.png'),
+                child: Image.asset('assets/images/mobis.png'),
               ),
               Container(
                   height: (Size_Height * 0.15),
@@ -861,6 +895,7 @@ class _TiltViewState extends State<TiltView> {
                                 AnimationVariables.drive_selectedButtonIndex,
                             onPressed: () {
                               setState(() {
+                                Haptics.vibrate(HapticsType.light);
                                 AnimationVariables.drive_selectedButtonIndex =
                                     index;
                                 // print('Drive Button Click');
@@ -901,7 +936,7 @@ class _TiltViewState extends State<TiltView> {
         angle: angle,
         child: AspectRatio(
           aspectRatio: 1 / 1,
-          child: Image.asset('assets/images/tyre_6.png'),
+          child: Image.asset('assets/images/wheel.png'),
         ),
       ),
     );

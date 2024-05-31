@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import './global.dart';
@@ -266,6 +267,7 @@ class _SettingViewState extends State<SettingView> {
                       ),
                       child: ElevatedButton(
                         onPressed: () {
+                          Haptics.vibrate(HapticsType.light);
                           if (GlobalVariables.isWifiConnected) {
                             GlobalVariables.PADIp =
                                 padIpController.text.isNotEmpty
@@ -296,9 +298,13 @@ class _SettingViewState extends State<SettingView> {
                                   GlobalVariables.TargetPort);
                               // print('setTarget');
                             } else {
+                              MessageView.showOverlayMessage(
+                                  context, Size_Width, "Please Invalid UDP");
                               // print('Invalid input');
                             }
                           } else {
+                            MessageView.showOverlayMessage(
+                                context, Size_Width, "Please Connect Wifi!");
                             // print("Please Connect Wifi");
                           }
                         },
@@ -519,6 +525,7 @@ class _SettingViewState extends State<SettingView> {
                     ),
                     child: ElevatedButton(
                       onPressed: () {
+                        Haptics.vibrate(HapticsType.light);
                         GlobalVariables.LeftCrab_Threshold = double.tryParse(
                                 GlobalVariables
                                     .leftcrabthresholdController.text) ??
@@ -593,7 +600,7 @@ class _SettingViewState extends State<SettingView> {
                   Container(
                     width: (Size_Width * 0.15),
                     alignment: Alignment(0.0, 0.0),
-                    child: Image.asset('assets/images/logo.png'),
+                    child: Image.asset('assets/images/marknext.png'),
                   ),
                   Container(
                     child: ToggleButton(
@@ -607,10 +614,12 @@ class _SettingViewState extends State<SettingView> {
                       leftDescription: 'Phone Tilt',
                       rightDescription: 'Joystick',
                       onLeftToggleActive: () {
+                        Haptics.vibrate(HapticsType.light);
                         // print('Joystick activated');
                         SetTxData.Button_Pedal = 13;
                       },
                       onRightToggleActive: () {
+                        Haptics.vibrate(HapticsType.light);
                         // print('Phone Tilt activated');
                         AnimationVariables.drive_selectedButtonIndex = -1;
                         GraphicVariables.resetColor();

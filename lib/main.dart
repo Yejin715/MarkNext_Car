@@ -3,14 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:haptic_feedback/haptic_feedback.dart';
 import 'package:wakelock/wakelock.dart';
 import 'dart:ui';
 import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:motion_sensors/motion_sensors.dart';
-
 import './global.dart';
 import './TiltView.dart';
 import './JoystickView.dart';
@@ -28,10 +27,6 @@ class Main extends StatefulWidget {
 
 class _Main extends State<Main> with TickerProviderStateMixin {
   late TimerMonitor _TimerMonitor;
-  List<double> _accelerometerValues = [0.0, 0.0, 0.0];
-  List<double> _gyroValues = [0.0, 0.0, 0.0];
-  List<double> _orientaionValues = [0.0, 0.0, 0.0];
-  DateTime _lastUpdateTime = DateTime.now();
 
   final currentDate = DateTime.now(); // 현재 날짜 가져오기
 
@@ -93,118 +88,25 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     });
   }
 
-  // void SensorsPlusValue() {
-  //   // 중력을 반영하지 않은 순수 사용자의 힘에 의한 가속도계 값
-  //   motionSensors.accelerometer.listen((AccelerometerEvent event) {
-  //     setState(() {
-  //       SetTxData.Accel_X = (event.x).toInt();
-  //       SetTxData.Accel_Y = (event.y).toInt();
-  //       SetTxData.Accel_Z = (event.z).toInt();
-  //       setState(() {
-  //         _accelerometerValues = [event.x, event.y, event.z];
-  //         // print(_accelerometerValues);
-  //         //yejin table = _accelerometerValues[0], another table = _accelerometerValues[1]
-  //         double temp = _accelerometerValues[1] * -30;
-  //         double tilt_angle = _accelerometerValues[1] * -9;
-  //         if ((SetTxData.Button_Pedal == 6) & (GlobalVariables.showContainer)) {
-  //           if (tilt_angle >= 15) {
-  //             AnimationVariables.isRotateVisible = false;
-  //             if (!AnimationVariables.isRotateshow) {
-  //               AnimationVariables.isRotateshow = true;
-  //               AnimationVariables.rotateanimationController.repeat();
-  //             }
-  //           } else if (tilt_angle <= -15) {
-  //             AnimationVariables.isRotateVisible = true;
-  //             if (!AnimationVariables.isRotateshow) {
-  //               AnimationVariables.isRotateshow = true;
-  //               AnimationVariables.rotateanimationController.repeat();
-  //             }
-  //           } else {
-  //             if (AnimationVariables.isRotateshow) {
-  //               AnimationVariables.isRotateshow = false;
-  //               AnimationVariables.rotateanimationController.stop();
-  //             }
-  //           }
-  //         } else {
-  //           if (AnimationVariables.isRotateshow) {
-  //             AnimationVariables.isRotateshow = false;
-  //             AnimationVariables.rotateanimationController.stop();
-  //           }
-  //         }
-
-  //         if (temp >= 300) {
-  //           SetTxData.Msg2_SBW_Cmd_Tx = 300;
-  //         } else if (temp <= -300) {
-  //           SetTxData.Msg2_SBW_Cmd_Tx = -300;
-  //         } else {
-  //           SetTxData.Msg2_SBW_Cmd_Tx = temp.toInt();
-  //         }
-  //       });
-  //     });
-  //   });
-
-  //   // 자이로 값
-  //   motionSensors.gyroscope.listen((GyroscopeEvent event) {
-  //     SetTxData.Gyro_P = (event.x / 0.01).toInt();
-  //     SetTxData.Gyro_R = (event.y / 0.01).toInt();
-  //     SetTxData.Gyro_Y = (event.z / 0.01).toInt();
-  //     setState(() {
-  //       _gyroValues = [event.x, event.y, event.z];
-
-  //       if (GlobalVariables.showContainer) {
-  //         if ((_gyroValues[0] < GlobalVariables.LeftCrab_Threshold)) {
-  //           SetTxData.Button_Pedal = 4;
-  //           AnimationVariables.isArrowVisible = true;
-  //           if (!AnimationVariables.isArrowshow) {
-  //             AnimationVariables.isArrowshow = true;
-  //             // AnimationVariables.streatanimationController.repeat();
-  //           }
-  //         } else if ((_gyroValues[0] > GlobalVariables.RightCrab_Threshold)) {
-  //           SetTxData.Button_Pedal = 5;
-  //           AnimationVariables.isArrowVisible = false;
-  //           if (!AnimationVariables.isArrowshow) {
-  //             AnimationVariables.isArrowshow = true;
-  //             // AnimationVariables.streatanimationController.repeat();
-  //           }
-  //         } else {}
-
-  //         if (_gyroValues[1] < GlobalVariables.FWS_Threshold) {
-  //           SetTxData.Button_Pedal = 10;
-  //         } else if (_gyroValues[1] > GlobalVariables.D4_Threshold) {
-  //           SetTxData.Button_Pedal = 11;
-  //         } else {}
-  //       }
-  //     });
-  //   });
-
-  //   motionSensors.isOrientationAvailable().then((available) {
-  //     if (available) {
-  //       motionSensors.orientation.listen((OrientationEvent event) {
-  //         setState(() {
-  //           GlobalVariables.Ori_Yaw = event.yaw;
-  //           GlobalVariables.Ori_Pitch = event.pitch;
-  //           GlobalVariables.Ori_Roll = event.roll;
-  //           print(
-  //               '${GlobalVariables.Ori_Yaw}, ${GlobalVariables.Ori_Pitch}, ${GlobalVariables.Ori_Roll}');
-  //         });
-  //       });
-  //     }
-  //   });
-  // }
   void SensorsPlusValue() {
     // 중력을 반영하지 않은 순수 사용자의 힘에 의한 가속도계 값
     accelerometerEventStream(samplingPeriod: SensorInterval.gameInterval)
         .listen(
       (AccelerometerEvent event) {
         SetTxData.Accel_X = (event.x).toInt();
-        SetTxData.Accel_Y = (event.y).toInt();
+        SetTxData.Accel_Y = -(event.y).toInt();
         SetTxData.Accel_Z = (event.z).toInt();
         setState(() {
-          _accelerometerValues = [event.x, event.y, event.z];
-          // print(_accelerometerValues);
+          GlobalVariables.accelerometerValues = [
+            event.x,
+            -event.y,
+            event.z,
+          ];
           //yejin table = _accelerometerValues[0], another table = _accelerometerValues[1]
-          double temp = _accelerometerValues[1] * -30;
-          double tilt_angle = _accelerometerValues[1] * -9;
+          double temp = GlobalVariables.orientation[1] * 3.4;
+          double tilt_angle = GlobalVariables.orientation[1];
+          // print(
+          //     '${GlobalVariables.orientation[1].toStringAsFixed(2)}, ${temp.toStringAsFixed(2)}');
           if ((SetTxData.Button_Pedal == 6) & (GlobalVariables.showContainer)) {
             if (tilt_angle >= 15) {
               AnimationVariables.isRotateVisible = false;
@@ -245,39 +147,47 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     );
 
     // 자이로 값
-    gyroscopeEventStream(samplingPeriod: SensorInterval.gameInterval)
-        .listen((GyroscopeEvent event) {
-      SetTxData.Gyro_P = (event.x / 0.01).toInt();
-      SetTxData.Gyro_R = (event.y / 0.01).toInt();
-      SetTxData.Gyro_Y = (event.z / 0.01).toInt();
-      setState(() {
-        _gyroValues = [event.x, event.y, event.z];
+    gyroscopeEventStream(samplingPeriod: SensorInterval.gameInterval).listen(
+      (GyroscopeEvent event) {
+        setState(() {
+          GlobalVariables.gyroValues = [-event.y, event.z, event.x];
+          SetTxData.Gyro_R = (GlobalVariables.gyroValues[0] / 0.01).toInt();
+          SetTxData.Gyro_P = (GlobalVariables.gyroValues[1] / 0.01).toInt();
+          SetTxData.Gyro_Y = (GlobalVariables.gyroValues[2] / 0.01).toInt();
+          // print(
+          //     '${GlobalVariables.gyroValues[0].toStringAsFixed(2)}   ${GlobalVariables.gyroValues[1].toStringAsFixed(2)}   ${GlobalVariables.gyroValues[2].toStringAsFixed(2)}');
 
-        if (GlobalVariables.showContainer) {
-          if ((_gyroValues[0] < GlobalVariables.LeftCrab_Threshold)) {
-            SetTxData.Button_Pedal = 4;
-            AnimationVariables.isArrowVisible = true;
-            if (!AnimationVariables.isArrowshow) {
-              AnimationVariables.isArrowshow = true;
-              // AnimationVariables.streatanimationController.repeat();
-            }
-          } else if ((_gyroValues[0] > GlobalVariables.RightCrab_Threshold)) {
-            SetTxData.Button_Pedal = 5;
-            AnimationVariables.isArrowVisible = false;
-            if (!AnimationVariables.isArrowshow) {
-              AnimationVariables.isArrowshow = true;
-              // AnimationVariables.streatanimationController.repeat();
-            }
-          } else {}
+          if (GlobalVariables.showContainer) {
+            if ((GlobalVariables.gyroValues[2] <
+                GlobalVariables.LeftCrab_Threshold)) {
+              SetTxData.Button_Pedal = 4;
+              AnimationVariables.isArrowVisible = true;
+              if (!AnimationVariables.isArrowshow) {
+                AnimationVariables.isArrowshow = true;
+                // AnimationVariables.streatanimationController.repeat();
+              }
+            } else if ((GlobalVariables.gyroValues[2] >
+                GlobalVariables.RightCrab_Threshold)) {
+              SetTxData.Button_Pedal = 5;
+              AnimationVariables.isArrowVisible = false;
+              if (!AnimationVariables.isArrowshow) {
+                AnimationVariables.isArrowshow = true;
+                // AnimationVariables.streatanimationController.repeat();
+              }
+            } else {}
 
-          if (_gyroValues[1] < GlobalVariables.FWS_Threshold) {
-            SetTxData.Button_Pedal = 10;
-          } else if (_gyroValues[1] > GlobalVariables.D4_Threshold) {
-            SetTxData.Button_Pedal = 11;
-          } else {}
-        }
-      });
-    });
+            if (GlobalVariables.gyroValues[0] < GlobalVariables.FWS_Threshold) {
+              SetTxData.Button_Pedal = 10;
+            } else if (GlobalVariables.gyroValues[0] >
+                GlobalVariables.D4_Threshold) {
+              SetTxData.Button_Pedal = 11;
+            } else {}
+          }
+        });
+      },
+      onError: (error) {},
+      cancelOnError: true,
+    );
   }
 
   @override
@@ -322,7 +232,9 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                               height: (Size_Height * 0.1),
                               child: IconButton(
                                 icon: Icon(Icons.flip_camera_ios),
-                                onPressed: () {},
+                                onPressed: () {
+                                  Haptics.vibrate(HapticsType.light);
+                                },
                               ),
                             ),
                           ),
@@ -351,7 +263,9 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                                             ? Icon(Icons.wifi) // Wi-Fi가 연결된 경우
                                             : Icon(Icons
                                                 .wifi_off), // Wi-Fi가 연결되지 않은 경우
-                                        onPressed: () {},
+                                        onPressed: () {
+                                          Haptics.vibrate(HapticsType.light);
+                                        },
                                       ),
                                     ),
                                   ),
@@ -390,6 +304,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                                     ? Icon(Icons.settings)
                                     : Icon(Icons.drive_eta),
                                 onPressed: () {
+                                  Haptics.vibrate(HapticsType.light);
                                   setState(() {
                                     GlobalVariables.showContainer =
                                         !GlobalVariables.showContainer;
@@ -419,6 +334,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
             ? Builder(
                 builder: (context) => FloatingActionButton(
                   onPressed: () {
+                    Haptics.vibrate(HapticsType.light);
                     AnimationVariables.isSendPressed = true; // Toggle isPressed
                     print(AnimationVariables.isSendPressed);
                     showDialog(
@@ -726,10 +642,11 @@ Widget buildButton(
     BuildContext context, double Size_Width, String text, int num) {
   return ElevatedButton(
     onPressed: () {
+      Haptics.vibrate(HapticsType.light);
       SetTxData.Button_Pedal = num;
       print(text);
       Navigator.pop(context); // Close the AlertDialog
-      showOverlayMessage(context, Size_Width, text);
+      MessageView.showOverlayMessage(context, Size_Width, text);
     },
     child: Container(
       width: (Size_Width * 0.07),
@@ -744,40 +661,4 @@ Widget buildButton(
       ),
     ),
   );
-}
-
-void showOverlayMessage(
-    BuildContext context, double Size_Width, String message) {
-  OverlayEntry overlayEntry;
-  overlayEntry = OverlayEntry(
-    builder: (context) => Positioned.fill(
-      child: Material(
-        color: Colors.transparent,
-        child: Center(
-          child: Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.black.withOpacity(0.8),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Text(
-              message,
-              style: TextStyle(
-                fontWeight: FontWeight.w600,
-                fontSize: Size_Width * 0.02,
-                color: Color(0xFFF3F3F3),
-              ),
-            ),
-          ),
-        ),
-      ),
-    ),
-  );
-
-  Overlay.of(context).insert(overlayEntry);
-
-  // 일정 시간 후에 Overlay를 제거합니다.
-  Future.delayed(Duration(milliseconds: 700), () {
-    overlayEntry.remove();
-  });
 }

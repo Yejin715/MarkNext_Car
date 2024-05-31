@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
+import 'package:haptic_feedback/haptic_feedback.dart';
 import 'dart:math'; // dart:math 패키지 가져오기
 
 import './main.dart';
@@ -133,6 +134,9 @@ class _JoystickViewState extends State<JoystickView> {
                       height: ((Size_Height * 0.35) - 5),
                       alignment: Alignment.center,
                       child: GestureDetector(
+                        onPanStart: ((details) {
+                          Haptics.vibrate(HapticsType.light);
+                        }),
                         onPanUpdate: (details) {
                           setState(() {
                             AnimationVariables.isJoyLeftDragging =
@@ -251,7 +255,7 @@ class _JoystickViewState extends State<JoystickView> {
                                 child: AspectRatio(
                               aspectRatio: 1 / 3,
                               child: Image.asset(
-                                'assets/images/car_removebg_preview_1.png',
+                                'assets/images/car.png',
                               ),
                             )),
                             GridView.builder(
@@ -445,6 +449,7 @@ class _JoystickViewState extends State<JoystickView> {
                                       onTap: () {
                                         setState(() {
                                           if ((row == 5) & (col == 5)) {
+                                            Haptics.vibrate(HapticsType.light);
                                             GraphicVariables.resetColor();
                                             GraphicVariables
                                                     .selectColor11x11[row]
@@ -457,6 +462,8 @@ class _JoystickViewState extends State<JoystickView> {
                                               case 0:
                                               case 10:
                                                 if ((col < 2) | (col > 8)) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -465,6 +472,8 @@ class _JoystickViewState extends State<JoystickView> {
                                               case 1:
                                               case 9:
                                                 if ((col < 3) | (col > 7)) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -475,6 +484,8 @@ class _JoystickViewState extends State<JoystickView> {
                                               case 7:
                                               case 8:
                                                 if ((col < 4) | (col > 6)) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -484,6 +495,8 @@ class _JoystickViewState extends State<JoystickView> {
                                               case 5:
                                               case 6:
                                                 if (col != 5) {
+                                                  Haptics.vibrate(
+                                                      HapticsType.light);
                                                   GraphicVariables.resetColor();
                                                   GraphicVariables.setPivot(
                                                       col, row, cellHeight);
@@ -687,6 +700,7 @@ class _JoystickViewState extends State<JoystickView> {
                                 alignment: Alignment.center,
                                 child: ElevatedButton(
                                   onPressed: () {
+                                    Haptics.vibrate(HapticsType.light);
                                     // print('Reset Button Click');
                                     GraphicVariables.resetColor();
                                     SetTxData.Pivot_Rcx = 0;
@@ -806,6 +820,9 @@ class _JoystickViewState extends State<JoystickView> {
                       height: ((Size_Height * 0.35) - 5),
                       alignment: Alignment.center,
                       child: GestureDetector(
+                        onPanStart: ((details) {
+                          Haptics.vibrate(HapticsType.light);
+                        }),
                         onPanUpdate: (details) {
                           setState(() {
                             AnimationVariables.isJoyRightDragging =
@@ -915,7 +932,7 @@ class _JoystickViewState extends State<JoystickView> {
               Container(
                 width: (Size_Width * 0.15),
                 alignment: Alignment(0.0, 0.0),
-                child: Image.asset('assets/images/logo.png'),
+                child: Image.asset('assets/images/mobis.png'),
               ),
               Container(
                   height: (Size_Height * 0.15),
@@ -941,6 +958,7 @@ class _JoystickViewState extends State<JoystickView> {
                                 AnimationVariables.drive_selectedButtonIndex,
                             onPressed: () {
                               setState(() {
+                                Haptics.vibrate(HapticsType.light);
                                 AnimationVariables.drive_selectedButtonIndex =
                                     index;
                                 // print('Drive Button Click');
@@ -980,7 +998,7 @@ class _JoystickViewState extends State<JoystickView> {
         angle: angle,
         child: AspectRatio(
           aspectRatio: 1 / 1,
-          child: Image.asset('assets/images/tyre_6.png'),
+          child: Image.asset('assets/images/wheel.png'),
         ),
       ),
     );
