@@ -34,10 +34,10 @@ class _Main extends State<Main> with TickerProviderStateMixin {
   void initState() {
     super.initState();
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
-    _loadThresholdValues();
+    DataClass.loadThresholdValues();
     Wakelock.enable();
-    // SetTxData.TxData = List<int>.filled(15, 0);
-    SetTxData.TxData = List<int>.filled(27, 0);
+    SetTxData.TxData = List<int>.filled(15, 0);
+    // SetTxData.TxData = List<int>.filled(27, 0);
     SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();
@@ -65,27 +65,6 @@ class _Main extends State<Main> with TickerProviderStateMixin {
       begin: Color(0xFF2A2A2A),
       end: Color(0xFFC358E9),
     ).animate(AnimationVariables.OperatinganimationController);
-  }
-
-  _loadThresholdValues() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    setState(() {
-      GlobalVariables.LeftCrab_Threshold =
-          prefs.getDouble('LeftCrab_Threshold') ?? -2.5;
-      GlobalVariables.RightCrab_Threshold =
-          prefs.getDouble('RightCrab_Threshold') ?? 2.5;
-      GlobalVariables.FWS_Threshold = prefs.getDouble('FWS_Threshold') ?? -4.5;
-      GlobalVariables.D4_Threshold = prefs.getDouble('D4_Threshold') ?? 4.5;
-
-      GlobalVariables.leftcrabthresholdController.text =
-          (GlobalVariables.LeftCrab_Threshold).toString();
-      GlobalVariables.rightcrabthresholdController.text =
-          (GlobalVariables.RightCrab_Threshold).toString();
-      GlobalVariables.fwsthresholdController.text =
-          (GlobalVariables.FWS_Threshold).toString();
-      GlobalVariables.d4thresholdController.text =
-          (GlobalVariables.D4_Threshold).toString();
-    });
   }
 
   void SensorsPlusValue() {
@@ -336,7 +315,6 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                   onPressed: () {
                     Haptics.vibrate(HapticsType.light);
                     AnimationVariables.isSendPressed = true; // Toggle isPressed
-                    print(AnimationVariables.isSendPressed);
                     showDialog(
                         context: context,
                         barrierDismissible: true, // 이 부분을 true로 설정합니다.
@@ -437,7 +415,145 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                       : Icons.send),
                 ),
               )
-            : null,
+            : Builder(
+                builder: (context) => FloatingActionButton(
+                  onPressed: () {
+                    Haptics.vibrate(HapticsType.light);
+                    AnimationVariables.isSendPressed = true; // Toggle isPressed
+                    showDialog(
+                        context: context,
+                        barrierDismissible: true, // 이 부분을 true로 설정합니다.
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            title: Text("Duration Setting"),
+                            content: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                Text(
+                                  'Set the UDP Timer Period.(Unit : millis, min : 10ms)',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: (Size_Width * 0.02),
+                                    color: Color(0xFFFFFFFF),
+                                  ),
+                                ),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: Size_Height * 0.1,
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          'Duration : ',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: (Size_Width * 0.015),
+                                            color: Color(0xFFFFFFFF),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => MessageView.showInputModal(
+                                            context,
+                                            'Duration',
+                                            GlobalVariables.timerController),
+                                        child: AbsorbPointer(
+                                          child: Container(
+                                            width: Size_Width * 0.1,
+                                            height: Size_Height * 0.1,
+                                            margin:
+                                                EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                            padding: EdgeInsets.fromLTRB(
+                                                10, 5, 10, 1),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFF3F3F3),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: TextField(
+                                              style: new TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize:
+                                                      (Size_Width * 0.015),
+                                                  color: Color(0xFF2A2A2A)),
+                                              decoration: InputDecoration(
+                                                  hintText:
+                                                      'Duration(Def.50ms)',
+                                                  hintStyle: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 162, 162, 162),
+                                                  )),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              controller: GlobalVariables
+                                                  .timerController,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: Size_Height * 0.1,
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          ' ms',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: (Size_Width * 0.015),
+                                            color: Color(0xFFFFFFFF),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  margin: EdgeInsets.fromLTRB(5, 0, 5, 0),
+                                  child: ElevatedButton(
+                                    onPressed: () {
+                                      Haptics.vibrate(HapticsType.light);
+                                      int temp = int.tryParse(GlobalVariables
+                                              .timerController.text) ??
+                                          50;
+                                      if (temp < 10) {
+                                        temp = 10;
+                                      }
+                                      GlobalVariables.timerController.text =
+                                          temp.toString();
+                                      GlobalVariables.timer_duration = temp;
+                                      Navigator.pop(
+                                          context); // Close the AlertDialog
+                                      DataClass.saveIntValue('Timer_Duration',
+                                          GlobalVariables.timer_duration);
+                                    },
+                                    child: Container(
+                                      width: (Size_Width * 0.07),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Setting',
+                                        style: TextStyle(
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: Size_Width * 0.015,
+                                          color: Color(0xFFF3F3F3),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        }).then((value) {
+                      setState(() {
+                        AnimationVariables.isSendPressed = false;
+                      });
+                    });
+                  },
+                  child: Icon(AnimationVariables.isSendPressed
+                      ? Icons.close
+                      : Icons.timer),
+                ),
+              ),
         // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
         // floatingActionButton: GlobalVariables.showContainer
         //     ? SpeedDial(
@@ -644,7 +760,6 @@ Widget buildButton(
     onPressed: () {
       Haptics.vibrate(HapticsType.light);
       SetTxData.Button_Pedal = num;
-      print(text);
       Navigator.pop(context); // Close the AlertDialog
       MessageView.showOverlayMessage(context, Size_Width, text);
     },

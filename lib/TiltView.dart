@@ -216,12 +216,108 @@ class _TiltViewState extends State<TiltView> {
                           //     ]),
                           child: Stack(alignment: Alignment.center, children: [
                             Container(
-                                child: AspectRatio(
-                              aspectRatio: 1 / 3,
-                              child: Image.asset(
-                                'assets/images/car.png',
+                              child: Transform.rotate(
+                                angle:
+                                    GlobalVariables.orientation[1] / (180 / pi),
+                                child: Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                          child: AspectRatio(
+                                        aspectRatio: 1 / 3,
+                                        child: Image.asset(
+                                          'assets/images/car.png',
+                                        ),
+                                      )),
+                                      GridView.builder(
+                                        gridDelegate:
+                                            SliverGridDelegateWithFixedCrossAxisCount(
+                                          crossAxisCount: 7,
+                                        ),
+                                        itemCount: 7 * 7,
+                                        itemBuilder: (context, index) {
+                                          int row = index ~/ 7;
+                                          int col = index % 7;
+                                          Widget child;
+                                          switch (col) {
+                                            case 2:
+                                              switch (row) {
+                                                case 2:
+                                                  child = buildWheel(
+                                                    Size_Width: Size_Width,
+                                                    Size_Height: Size_Height,
+                                                    angle: (SetRxData
+                                                                .Measured_Steer_Angle_Fl *
+                                                            (-pi)) /
+                                                        180,
+                                                  );
+                                                  break;
+                                                case 4:
+                                                  child = buildWheel(
+                                                    Size_Width: Size_Width,
+                                                    Size_Height: Size_Height,
+                                                    angle: (SetRxData
+                                                                .Measured_Steer_Angle_Rl *
+                                                            (-pi)) /
+                                                        180,
+                                                  );
+                                                  break;
+                                                default:
+                                                  child = SizedBox
+                                                      .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
+                                                  break;
+                                              }
+                                              break;
+                                            case 4:
+                                              switch (row) {
+                                                case 2:
+                                                  child = buildWheel(
+                                                    Size_Width: Size_Width,
+                                                    Size_Height: Size_Height,
+                                                    angle: (SetRxData
+                                                                .Measured_Steer_Angle_Fr *
+                                                            (-pi)) /
+                                                        180,
+                                                  );
+                                                  break;
+                                                case 4:
+                                                  child = buildWheel(
+                                                    Size_Width: Size_Width,
+                                                    Size_Height: Size_Height,
+                                                    angle: (SetRxData
+                                                                .Measured_Steer_Angle_Rr *
+                                                            (-pi)) /
+                                                        180,
+                                                  );
+                                                  break;
+                                                default:
+                                                  child = SizedBox
+                                                      .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
+                                                  break;
+                                              }
+                                              break;
+                                            default:
+                                              child = SizedBox
+                                                  .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
+                                              break;
+                                          }
+
+                                          return GestureDetector(
+                                            onTap: () {},
+                                            child: Container(
+                                              // height: cellHeight,
+                                              decoration: BoxDecoration(
+                                                  // color: Colors.red,
+                                                  // shape: BoxShape.circle,
+                                                  ),
+                                              child: child,
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ]),
                               ),
-                            )),
+                            ),
                             GridView.builder(
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
@@ -308,92 +404,6 @@ class _TiltViewState extends State<TiltView> {
                                 );
                               },
                             ),
-                            GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 7,
-                              ),
-                              itemCount: 7 * 7,
-                              itemBuilder: (context, index) {
-                                int row = index ~/ 7;
-                                int col = index % 7;
-                                Widget child;
-                                switch (col) {
-                                  case 2:
-                                    switch (row) {
-                                      case 2:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Fl *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      case 4:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Rl *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      default:
-                                        child = SizedBox
-                                            .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
-                                        break;
-                                    }
-                                    break;
-                                  case 4:
-                                    switch (row) {
-                                      case 2:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Fr *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      case 4:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Rr *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      default:
-                                        child = SizedBox
-                                            .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
-                                        break;
-                                    }
-                                    break;
-                                  default:
-                                    child = SizedBox
-                                        .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
-                                    break;
-                                }
-
-                                return GestureDetector(
-                                  onTap: () {},
-                                  child: Container(
-                                    // height: cellHeight,
-                                    decoration: BoxDecoration(
-                                        // color: Colors.red,
-                                        // shape: BoxShape.circle,
-                                        ),
-                                    child: child,
-                                  ),
-                                );
-                              },
-                            ),
                             ClipRect(
                               // Overflow 속성 사용
                               child: CustomPaint(
@@ -411,7 +421,7 @@ class _TiltViewState extends State<TiltView> {
 
                                     return GestureDetector(
                                       onTap: () {
-                                        print('${row}, ${col}');
+                                        // print('${row}, ${col}');
                                         setState(() {
                                           if ((row == 5) & (col == 5)) {
                                             Haptics.vibrate(HapticsType.light);
@@ -899,7 +909,7 @@ class _TiltViewState extends State<TiltView> {
                                 AnimationVariables.drive_selectedButtonIndex =
                                     index;
                                 // print('Drive Button Click');
-                                print(index);
+                                // print(index);
                                 SetTxData.Button_Pedal = AnimationVariables
                                     .drive_selectedButtonIndex;
                               });

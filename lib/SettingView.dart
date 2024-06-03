@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'dart:async';
 import 'package:connectivity/connectivity.dart';
 import 'package:haptic_feedback/haptic_feedback.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import './global.dart';
 import './UDP.dart';
@@ -38,11 +37,6 @@ class _SettingViewState extends State<SettingView> {
   final FocusNode threshold2FocusNode = FocusNode();
   final FocusNode threshold3FocusNode = FocusNode();
   final FocusNode threshold4FocusNode = FocusNode();
-
-  _saveThresholdValue(String key, double value) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setDouble(key, value);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -83,8 +77,8 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () =>
-                    _showInputModal(context, 'PAD IP', padIpController),
+                onTap: () => MessageView.showInputModal(
+                    context, 'PAD IP', padIpController),
                 child: AbsorbPointer(
                   child: Container(
                     width: Size_Width * 0.25,
@@ -125,8 +119,8 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () =>
-                    _showInputModal(context, 'PAD PORT', padPortController),
+                onTap: () => MessageView.showInputModal(
+                    context, 'PAD PORT', padPortController),
                 child: AbsorbPointer(
                   child: Container(
                     width: Size_Width * 0.25,
@@ -174,8 +168,8 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () =>
-                    _showInputModal(context, 'Target IP', targetIpController),
+                onTap: () => MessageView.showInputModal(
+                    context, 'Target IP', targetIpController),
                 child: AbsorbPointer(
                   child: Container(
                     width: Size_Width * 0.25,
@@ -216,7 +210,7 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _showInputModal(
+                onTap: () => MessageView.showInputModal(
                     context, 'Target PORT', targetPortController),
                 child: AbsorbPointer(
                   child: Container(
@@ -384,7 +378,7 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _showInputModal(context, 'LeftCrab',
+                onTap: () => MessageView.showInputModal(context, 'LeftCrab',
                     GlobalVariables.leftcrabthresholdController),
                 child: AbsorbPointer(
                   child: Container(
@@ -420,7 +414,7 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _showInputModal(context, 'RightCrab',
+                onTap: () => MessageView.showInputModal(context, 'RightCrab',
                     GlobalVariables.rightcrabthresholdController),
                 child: AbsorbPointer(
                   child: Container(
@@ -456,7 +450,7 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _showInputModal(
+                onTap: () => MessageView.showInputModal(
                     context, 'FWS', GlobalVariables.fwsthresholdController),
                 child: AbsorbPointer(
                   child: Container(
@@ -492,7 +486,7 @@ class _SettingViewState extends State<SettingView> {
                 ),
               ),
               GestureDetector(
-                onTap: () => _showInputModal(
+                onTap: () => MessageView.showInputModal(
                     context, 'D4', GlobalVariables.d4thresholdController),
                 child: AbsorbPointer(
                   child: Container(
@@ -540,13 +534,13 @@ class _SettingViewState extends State<SettingView> {
                         GlobalVariables.D4_Threshold = double.tryParse(
                                 GlobalVariables.d4thresholdController.text) ??
                             -4.5;
-                        _saveThresholdValue('LeftCrab_Threshold',
+                        DataClass.saveDoubleValue('LeftCrab_Threshold',
                             GlobalVariables.LeftCrab_Threshold);
-                        _saveThresholdValue('RightCrab_Threshold',
+                        DataClass.saveDoubleValue('RightCrab_Threshold',
                             GlobalVariables.RightCrab_Threshold);
-                        _saveThresholdValue(
+                        DataClass.saveDoubleValue(
                             'FWS_Threshold', GlobalVariables.FWS_Threshold);
-                        _saveThresholdValue(
+                        DataClass.saveDoubleValue(
                             'D4_Threshold', GlobalVariables.D4_Threshold);
                       },
                       style: ElevatedButton.styleFrom(
@@ -640,43 +634,6 @@ class _SettingViewState extends State<SettingView> {
                   ),
                 ])),
       ],
-    );
-  }
-
-  void _showInputModal(
-      BuildContext context, String label, TextEditingController controller) {
-    FocusNode focusNode = FocusNode();
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      builder: (BuildContext context) {
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          FocusScope.of(context).requestFocus(focusNode);
-        });
-
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(context).viewInsets.bottom,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  controller: controller,
-                  focusNode: focusNode,
-                  keyboardType: TextInputType.number,
-                  decoration: InputDecoration(labelText: label),
-                  onSubmitted: (value) {
-                    Navigator.pop(context);
-                  },
-                ),
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 }
