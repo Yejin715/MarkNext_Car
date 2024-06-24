@@ -611,6 +611,15 @@ class _SettingViewState extends State<SettingView> {
                         Haptics.vibrate(HapticsType.light);
                         // print('Joystick activated');
                         SetTxData.Button_Pedal = 13;
+                        AnimationVariables.drive_selectedButtonIndex = -1;
+                        GraphicVariables.resetColor();
+                        SetTxData.Pivot_Rcx = 0;
+                        SetTxData.Pivot_Rcy = 0;
+
+                        if (AnimationVariables.isArrowshow) {
+                          AnimationVariables.isArrowshow = false;
+                          // AnimationVariables.streatanimationController.stop();
+                        }
                       },
                       onRightToggleActive: () {
                         Haptics.vibrate(HapticsType.light);

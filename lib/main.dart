@@ -10,6 +10,7 @@ import 'dart:async';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'dart:math';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:screen_state/screen_state.dart';
 import './global.dart';
 import './TiltView.dart';
 import './JoystickView.dart';
@@ -27,6 +28,8 @@ class Main extends StatefulWidget {
 
 class _Main extends State<Main> with TickerProviderStateMixin {
   late TimerMonitor _TimerMonitor;
+  Screen _screen = Screen();
+  Stream<ScreenStateEvent>? _screenStateStream;
 
   final currentDate = DateTime.now(); // 현재 날짜 가져오기
 
@@ -36,8 +39,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     WidgetsFlutterBinding.ensureInitialized(); // 앱이 초기화될 때 Future가 완료되도록 보장
     DataClass.loadThresholdValues();
     Wakelock.enable();
-    SetTxData.TxData = List<int>.filled(15, 0);
-    // SetTxData.TxData = List<int>.filled(27, 0);
+    // SetTxData.TxData = List<int>.filled(15, 0);
+    SetTxData.TxData = List<int>.filled(27, 0);
     SetRxData.RxData = List<int>.filled(38, 0);
     _TimerMonitor = TimerMonitor();
     _TimerMonitor.startMonitoring();
@@ -65,6 +68,21 @@ class _Main extends State<Main> with TickerProviderStateMixin {
       begin: Color(0xFF2A2A2A),
       end: Color(0xFFC358E9),
     ).animate(AnimationVariables.OperatinganimationController);
+
+    // 화면 상태 감지
+    _screenStateStream = _screen.screenStateStream;
+    _screenStateStream?.listen((ScreenStateEvent event) {
+      if (event == ScreenStateEvent.SCREEN_OFF) {
+        // print("화면 Off");
+        GlobalVariables.Screen_Off = true;
+        _stopAnimations();
+      } else if (event == ScreenStateEvent.SCREEN_ON) {
+        // print("화면 On");
+
+        GlobalVariables.Screen_Off = false;
+        _startAnimations();
+      }
+    });
   }
 
   void SensorsPlusValue() {
@@ -111,14 +129,15 @@ class _Main extends State<Main> with TickerProviderStateMixin {
               AnimationVariables.rotateanimationController.stop();
             }
           }
-
-          if (temp >= 300) {
-            SetTxData.Msg2_SBW_Cmd_Tx = 300;
-          } else if (temp <= -300) {
-            SetTxData.Msg2_SBW_Cmd_Tx = -300;
-          } else {
-            SetTxData.Msg2_SBW_Cmd_Tx = temp.toInt();
-          }
+          if (!GlobalVariables.Screen_Off) {
+            if (temp >= 300) {
+              SetTxData.Msg2_SBW_Cmd_Tx = 300;
+            } else if (temp <= -300) {
+              SetTxData.Msg2_SBW_Cmd_Tx = -300;
+            } else {
+              SetTxData.Msg2_SBW_Cmd_Tx = temp.toInt();
+            }
+          } else {}
         });
       },
       onError: (error) {},
@@ -136,7 +155,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
           // print(
           //     '${GlobalVariables.gyroValues[0].toStringAsFixed(2)}   ${GlobalVariables.gyroValues[1].toStringAsFixed(2)}   ${GlobalVariables.gyroValues[2].toStringAsFixed(2)}');
 
-          if (GlobalVariables.showContainer) {
+          if (GlobalVariables.showContainer && !AnimationVariables.istiltmode) {
             if ((GlobalVariables.gyroValues[2] <
                 GlobalVariables.LeftCrab_Threshold)) {
               SetTxData.Button_Pedal = 4;
@@ -145,6 +164,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                 AnimationVariables.isArrowshow = true;
                 // AnimationVariables.streatanimationController.repeat();
               }
+              AnimationVariables.istiltmode = true;
+              AnimationVariables.tiltTime = DateTime.now();
             } else if ((GlobalVariables.gyroValues[2] >
                 GlobalVariables.RightCrab_Threshold)) {
               SetTxData.Button_Pedal = 5;
@@ -153,13 +174,19 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                 AnimationVariables.isArrowshow = true;
                 // AnimationVariables.streatanimationController.repeat();
               }
+              AnimationVariables.istiltmode = true;
+              AnimationVariables.tiltTime = DateTime.now();
             } else {}
 
             if (GlobalVariables.gyroValues[0] < GlobalVariables.FWS_Threshold) {
               SetTxData.Button_Pedal = 10;
+              AnimationVariables.istiltmode = true;
+              AnimationVariables.tiltTime = DateTime.now();
             } else if (GlobalVariables.gyroValues[0] >
                 GlobalVariables.D4_Threshold) {
               SetTxData.Button_Pedal = 11;
+              AnimationVariables.istiltmode = true;
+              AnimationVariables.tiltTime = DateTime.now();
             } else {}
           }
         });
@@ -169,9 +196,21 @@ class _Main extends State<Main> with TickerProviderStateMixin {
     );
   }
 
+  void _stopAnimations() {
+    AnimationVariables.rotateanimationController.stop();
+    AnimationVariables.OperatinganimationController.stop();
+  }
+
+  void _startAnimations() {
+    AnimationVariables.rotateanimationController.repeat();
+    AnimationVariables.OperatinganimationController.repeat(reverse: true);
+  }
+
   @override
   void dispose() {
     _TimerMonitor.dispose();
+    AnimationVariables.rotateanimationController.dispose();
+    AnimationVariables.OperatinganimationController.dispose();
     super.dispose();
   }
 
@@ -445,7 +484,7 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                                         height: Size_Height * 0.1,
                                         alignment: Alignment.centerRight,
                                         child: Text(
-                                          'Duration : ',
+                                          'Tx Duration : ',
                                           style: TextStyle(
                                             fontWeight: FontWeight.w600,
                                             fontSize: (Size_Width * 0.015),
@@ -456,8 +495,8 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                                       GestureDetector(
                                         onTap: () => MessageView.showInputModal(
                                             context,
-                                            'Duration',
-                                            GlobalVariables.timerController),
+                                            'Tx Duration',
+                                            GlobalVariables.txtimerController),
                                         child: AbsorbPointer(
                                           child: Container(
                                             width: Size_Width * 0.1,
@@ -487,7 +526,77 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                                               keyboardType:
                                                   TextInputType.number,
                                               controller: GlobalVariables
-                                                  .timerController,
+                                                  .txtimerController,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        height: Size_Height * 0.1,
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          ' ms',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: (Size_Width * 0.015),
+                                            color: Color(0xFFFFFFFF),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Container(
+                                        height: Size_Height * 0.1,
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          'Rx Duration : ',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: (Size_Width * 0.015),
+                                            color: Color(0xFFFFFFFF),
+                                          ),
+                                        ),
+                                      ),
+                                      GestureDetector(
+                                        onTap: () => MessageView.showInputModal(
+                                            context,
+                                            'Rx Duration',
+                                            GlobalVariables.rxtimerController),
+                                        child: AbsorbPointer(
+                                          child: Container(
+                                            width: Size_Width * 0.1,
+                                            height: Size_Height * 0.1,
+                                            margin:
+                                                EdgeInsets.fromLTRB(0, 5, 0, 5),
+                                            padding: EdgeInsets.fromLTRB(
+                                                10, 5, 10, 1),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFF3F3F3),
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                            child: TextField(
+                                              style: new TextStyle(
+                                                  fontWeight: FontWeight.w600,
+                                                  fontSize:
+                                                      (Size_Width * 0.015),
+                                                  color: Color(0xFF2A2A2A)),
+                                              decoration: InputDecoration(
+                                                  hintText:
+                                                      'Duration(Def.50ms)',
+                                                  hintStyle: TextStyle(
+                                                    color: const Color.fromARGB(
+                                                        255, 162, 162, 162),
+                                                  )),
+                                              keyboardType:
+                                                  TextInputType.number,
+                                              controller: GlobalVariables
+                                                  .rxtimerController,
                                             ),
                                           ),
                                         ),
@@ -512,19 +621,33 @@ class _Main extends State<Main> with TickerProviderStateMixin {
                                   child: ElevatedButton(
                                     onPressed: () {
                                       Haptics.vibrate(HapticsType.light);
-                                      int temp = int.tryParse(GlobalVariables
-                                              .timerController.text) ??
+                                      int temp_tx = int.tryParse(GlobalVariables
+                                              .txtimerController.text) ??
                                           50;
-                                      if (temp < 10) {
-                                        temp = 10;
+                                      int temp_rx = int.tryParse(GlobalVariables
+                                              .rxtimerController.text) ??
+                                          50;
+                                      if (temp_tx < 10) {
+                                        temp_tx = 10;
                                       }
-                                      GlobalVariables.timerController.text =
-                                          temp.toString();
-                                      GlobalVariables.timer_duration = temp;
+                                      if (temp_rx < 10) {
+                                        temp_rx = 10;
+                                      }
+                                      GlobalVariables.txtimerController.text =
+                                          temp_tx.toString();
+                                      GlobalVariables.txtimer_duration =
+                                          temp_tx;
+                                      Haptics.vibrate(HapticsType.light);
+                                      GlobalVariables.rxtimerController.text =
+                                          temp_rx.toString();
+                                      GlobalVariables.rxtimer_duration =
+                                          temp_rx;
                                       Navigator.pop(
                                           context); // Close the AlertDialog
-                                      DataClass.saveIntValue('Timer_Duration',
-                                          GlobalVariables.timer_duration);
+                                      DataClass.saveIntValue('TxTimer_Duration',
+                                          GlobalVariables.txtimer_duration);
+                                      DataClass.saveIntValue('RxTimer_Duration',
+                                          GlobalVariables.rxtimer_duration);
                                     },
                                     child: Container(
                                       width: (Size_Width * 0.07),

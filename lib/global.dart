@@ -9,8 +9,8 @@ import 'dart:math';
 import './UDP.dart';
 
 class SetTxData {
-  static List<int> TxData = List<int>.filled(15, 0);
-  // static List<int> TxData = List<int>.filled(27, 0);
+  // static List<int> TxData = List<int>.filled(15, 0);
+  static List<int> TxData = List<int>.filled(27, 0);
 
   static int Msg2_SBW_Cmd_Tx = 0;
   static int Accel_Pedal_Angle = 0;
@@ -20,6 +20,8 @@ class SetTxData {
   static int Joystick_Input_Right_X = 0;
   static int Joystick_Input_Right_Y = 0;
   static int Drive_Mode_Switch = 0;
+  static bool Flag_Pivot = false;
+  static int Flag_Pivot_Num = 0;
   static int Pivot_Rcx = 0;
   static int Pivot_Rcy = 0;
   static int Accel_X = 0;
@@ -55,7 +57,8 @@ class SetRxData {
 class DataClass {
   static void loadThresholdValues() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    GlobalVariables.timer_duration = prefs.getInt('Timer_Duration') ?? 50;
+    GlobalVariables.txtimer_duration = prefs.getInt('TxTimer_Duration') ?? 50;
+    GlobalVariables.rxtimer_duration = prefs.getInt('RxTimer_Duration') ?? 50;
     GlobalVariables.LeftCrab_Threshold =
         prefs.getDouble('LeftCrab_Threshold') ?? -2.5;
     GlobalVariables.RightCrab_Threshold =
@@ -102,7 +105,8 @@ class GraphicVariables {
 
   static void setPivot(int yvalue, int xvalue, double height) {
     GraphicVariables.selectColor11x11[xvalue][yvalue] = Colors.red;
-    SetTxData.Button_Pedal = 7;
+    SetTxData.Flag_Pivot = true;
+    SetTxData.Flag_Pivot_Num = 0;
     SetTxData.Pivot_Rcx = -(xvalue - 5);
     SetTxData.Pivot_Rcy = (yvalue - 5);
     GraphicVariables.circlepoint = Offset(
@@ -128,6 +132,10 @@ class AnimationVariables {
   static bool isJoyLeftDragging = false; // 클래스에 포함된 변수
   static bool isJoyRightDragging = false; // 클래스에 포함된 변수
   static bool isControlSelect = false;
+
+  static bool istiltmode = false;
+  static DateTime tiltTime = DateTime.now();
+  static int tilt_duration = 3000;
 }
 
 class MessageView {
@@ -206,7 +214,9 @@ class MessageView {
 }
 
 class GlobalVariables {
-  static int timer_duration = 50;
+  static bool Screen_Off = false;
+  static int txtimer_duration = 50;
+  static int rxtimer_duration = 50;
   static List<double> orientation = [0.0, 0.0, 0.0];
   static List<double> gyroorientation = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0];
   static List<double> accorientation = [0.0, 0.0, 0.0];
@@ -226,6 +236,7 @@ class GlobalVariables {
   static bool isUDPConnected = false;
   static DateTime nowDateTime = DateTime.now();
   static DateTime sendDateTime = DateTime.now();
+  static DateTime reavDateTime = DateTime.now();
 
   static String PADIp = "";
   static int PADPort = 0;
@@ -237,8 +248,10 @@ class GlobalVariables {
   static double FWS_Threshold = -4.5;
   static double D4_Threshold = 4.5;
 
-  static TextEditingController timerController =
-      TextEditingController(text: (GlobalVariables.timer_duration).toString());
+  static TextEditingController txtimerController = TextEditingController(
+      text: (GlobalVariables.txtimer_duration).toString());
+  static TextEditingController rxtimerController = TextEditingController(
+      text: (GlobalVariables.rxtimer_duration).toString());
   static TextEditingController leftcrabthresholdController =
       TextEditingController(
           text: (GlobalVariables.LeftCrab_Threshold).toString());
@@ -249,7 +262,7 @@ class GlobalVariables {
       TextEditingController(text: (GlobalVariables.FWS_Threshold).toString());
   static TextEditingController d4thresholdController =
       TextEditingController(text: (GlobalVariables.D4_Threshold).toString());
-
+  static List<String> Drive_Mode_Switch_Label = ["Normal", "Reverse"];
   static List<String> DriveMode = [
     "Parking",
     "Parking",
@@ -265,6 +278,27 @@ class GlobalVariables {
     "D4",
     "Parking"
   ];
+
+  static void _resetValues() {
+    SetTxData.Msg2_SBW_Cmd_Tx = 0;
+    SetTxData.Accel_Pedal_Angle = 0;
+    SetTxData.Button_Pedal = 0;
+    SetTxData.Joystick_Input_Left_X = 0;
+    SetTxData.Joystick_Input_Left_Y = 0;
+    SetTxData.Joystick_Input_Right_X = 0;
+    SetTxData.Joystick_Input_Right_Y = 0;
+    SetTxData.Drive_Mode_Switch = 0;
+    SetTxData.Pivot_Rcx = 0;
+    SetTxData.Pivot_Rcy = 0;
+    SetTxData.Accel_X = 0;
+    SetTxData.Accel_Y = 0;
+    SetTxData.Accel_Z = 0;
+    SetTxData.Gyro_Y = 0;
+    SetTxData.Gyro_P = 0;
+    SetTxData.Gyro_R = 0;
+    GraphicVariables.resetColor();
+    AnimationVariables.drive_selectedButtonIndex = -1;
+  }
 }
 
 class TimerMonitor {
@@ -275,67 +309,84 @@ class TimerMonitor {
   void startMonitoring() {
     Timer.periodic(Duration(milliseconds: 10), (timer) async {
       _calculateAngles();
-      // Check Wifi
-      final connectivityResult = await Connectivity().checkConnectivity();
-      final isWifiConnected = connectivityResult == ConnectivityResult.wifi;
-      _wifiStreamController.add(isWifiConnected);
-      switch (SetTxData.Button_Pedal) {
-        case 0:
-        case 1:
-        case 2:
-        case 3:
-          GraphicVariables.resetColor();
 
-          if (AnimationVariables.isArrowshow) {
-            AnimationVariables.isArrowshow = false;
-            // AnimationVariables.streatanimationController.stop();
-          }
-          break;
-        case 4:
-          AnimationVariables.drive_selectedButtonIndex = -1;
-          GraphicVariables.resetColor();
-          AnimationVariables.isArrowVisible = true;
-          if (!AnimationVariables.isArrowshow) {
-            AnimationVariables.isArrowshow = true;
-            // AnimationVariables.streatanimationController.repeat();
-          }
-          break;
-        case 5:
-          AnimationVariables.drive_selectedButtonIndex = -1;
-          GraphicVariables.resetColor();
-          AnimationVariables.isArrowVisible = false;
-          if (!AnimationVariables.isArrowshow) {
-            AnimationVariables.isArrowshow = true;
-            // AnimationVariables.streatanimationController.repeat();
-          }
-          break;
-        case 6:
-        case 7:
-          AnimationVariables.drive_selectedButtonIndex = -1;
-          if (AnimationVariables.isArrowshow) {
-            AnimationVariables.isArrowshow = false;
-            // AnimationVariables.streatanimationController.stop();
-          }
-          break;
-        default:
-          AnimationVariables.drive_selectedButtonIndex = -1;
-          GraphicVariables.resetColor();
-
-          if (AnimationVariables.isArrowshow) {
-            AnimationVariables.isArrowshow = false;
-            // AnimationVariables.streatanimationController.stop();
-          }
-          break;
+      if (DateTime.now()
+              .difference(AnimationVariables.tiltTime)
+              .inMilliseconds >=
+          AnimationVariables.tilt_duration) {
+        AnimationVariables.istiltmode = false;
       }
 
       // Date & Time
       GlobalVariables.nowDateTime = DateTime.now();
+    });
+    Timer.periodic(Duration(milliseconds: 50), (timer) async {
+      // Check Wifi
+      final connectivityResult = await Connectivity().checkConnectivity();
+      final isWifiConnected = connectivityResult == ConnectivityResult.wifi;
+      _wifiStreamController.add(isWifiConnected);
+
+      if (!SetTxData.Flag_Pivot) {
+        switch (SetTxData.Button_Pedal) {
+          case 0:
+          case 1:
+          case 2:
+          case 3:
+            GraphicVariables.resetColor();
+
+            if (AnimationVariables.isArrowshow) {
+              AnimationVariables.isArrowshow = false;
+              // AnimationVariables.streatanimationController.stop();
+            }
+            break;
+          case 4:
+            AnimationVariables.drive_selectedButtonIndex = -1;
+            GraphicVariables.resetColor();
+            AnimationVariables.isArrowVisible = true;
+            if (!AnimationVariables.isArrowshow) {
+              AnimationVariables.isArrowshow = true;
+              // AnimationVariables.streatanimationController.repeat();
+            }
+            break;
+          case 5:
+            AnimationVariables.drive_selectedButtonIndex = -1;
+            GraphicVariables.resetColor();
+            AnimationVariables.isArrowVisible = false;
+            if (!AnimationVariables.isArrowshow) {
+              AnimationVariables.isArrowshow = true;
+              // AnimationVariables.streatanimationController.repeat();
+            }
+            break;
+          case 6:
+          case 7:
+            AnimationVariables.drive_selectedButtonIndex = -1;
+            if (AnimationVariables.isArrowshow) {
+              AnimationVariables.isArrowshow = false;
+              // AnimationVariables.streatanimationController.stop();
+            }
+            break;
+          default:
+            AnimationVariables.drive_selectedButtonIndex = -1;
+            GraphicVariables.resetColor();
+
+            if (AnimationVariables.isArrowshow) {
+              AnimationVariables.isArrowshow = false;
+              // AnimationVariables.streatanimationController.stop();
+            }
+            break;
+        }
+      } else {}
+    });
+    Timer.periodic(Duration(milliseconds: 10), (timer) async {
+      if (GlobalVariables.Screen_Off) {
+        GlobalVariables._resetValues();
+      } else {}
+
       if (DateTime.now()
               .difference(GlobalVariables.sendDateTime)
               .inMilliseconds >=
-          GlobalVariables.timer_duration) {
+          GlobalVariables.txtimer_duration) {
         if (GlobalVariables.isUDPConnected) {
-          udp.bind(GlobalVariables.PADIp, GlobalVariables.PADPort);
           udp.send(
               SetTxData.TxData,
               GlobalVariables.PADIp,
@@ -344,6 +395,15 @@ class TimerMonitor {
               GlobalVariables.TargetPort);
         } else {}
         GlobalVariables.sendDateTime = DateTime.now();
+      }
+      if (DateTime.now()
+              .difference(GlobalVariables.reavDateTime)
+              .inMilliseconds >=
+          GlobalVariables.rxtimer_duration) {
+        if (GlobalVariables.isUDPConnected) {
+          udp.bind(GlobalVariables.PADIp, GlobalVariables.PADPort);
+        } else {}
+        GlobalVariables.reavDateTime = DateTime.now();
       }
     });
   }
@@ -487,8 +547,8 @@ class TimerMonitor {
         GlobalVariables.accorientation[1] + GlobalVariables.gyroorientation[4];
     GlobalVariables.orientation[2] = GlobalVariables
         .gyroorientation[5]; //  GlobalVariables.accorientation[2]
-    print(
-        '${GlobalVariables.orientation[0].toStringAsFixed(2)}, ${GlobalVariables.orientation[1].toStringAsFixed(2)}, ${GlobalVariables.orientation[2].toStringAsFixed(2)} ');
+    // print(
+    //     '${GlobalVariables.orientation[0].toStringAsFixed(2)}, ${GlobalVariables.orientation[1].toStringAsFixed(2)}, ${GlobalVariables.orientation[2].toStringAsFixed(2)} ');
     // print(
     //     '${GlobalVariables.orientation[0].toStringAsFixed(2)}, ${GlobalVariables.orientation[1].toStringAsFixed(2)}, ${GlobalVariables.orientation[2].toStringAsFixed(2)}   :   ${GlobalVariables.accorientation[0].toStringAsFixed(2)}, ${GlobalVariables.accorientation[1].toStringAsFixed(2)}, ${GlobalVariables.accorientation[2].toStringAsFixed(2)}   :   ${GlobalVariables.gyroorientation[3].toStringAsFixed(2)}, ${GlobalVariables.gyroorientation[4].toStringAsFixed(2)}, ${GlobalVariables.gyroorientation[5].toStringAsFixed(2)}');
   }

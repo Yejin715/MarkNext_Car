@@ -252,12 +252,110 @@ class _JoystickViewState extends State<JoystickView> {
                           //     ]),
                           child: Stack(alignment: Alignment.center, children: [
                             Container(
-                                child: AspectRatio(
-                              aspectRatio: 1 / 3,
-                              child: Image.asset(
-                                'assets/images/car.png',
+                              child: RepaintBoundary(
+                                child: Transform.rotate(
+                                  angle: GlobalVariables.orientation[1] /
+                                      (180 / pi),
+                                  child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Container(
+                                            child: AspectRatio(
+                                          aspectRatio: 1 / 3,
+                                          child: Image.asset(
+                                            'assets/images/car.png',
+                                          ),
+                                        )),
+                                        GridView.builder(
+                                          gridDelegate:
+                                              SliverGridDelegateWithFixedCrossAxisCount(
+                                            crossAxisCount: 7,
+                                          ),
+                                          itemCount: 7 * 7,
+                                          itemBuilder: (context, index) {
+                                            int row = index ~/ 7;
+                                            int col = index % 7;
+                                            Widget child;
+                                            switch (col) {
+                                              case 2:
+                                                switch (row) {
+                                                  case 2:
+                                                    child = buildWheel(
+                                                      Size_Width: Size_Width,
+                                                      Size_Height: Size_Height,
+                                                      angle: (SetRxData
+                                                                  .Measured_Steer_Angle_Fl *
+                                                              (-pi)) /
+                                                          180,
+                                                    );
+                                                    break;
+                                                  case 4:
+                                                    child = buildWheel(
+                                                      Size_Width: Size_Width,
+                                                      Size_Height: Size_Height,
+                                                      angle: (SetRxData
+                                                                  .Measured_Steer_Angle_Rl *
+                                                              (-pi)) /
+                                                          180,
+                                                    );
+                                                    break;
+                                                  default:
+                                                    child = SizedBox
+                                                        .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
+                                                    break;
+                                                }
+                                                break;
+                                              case 4:
+                                                switch (row) {
+                                                  case 2:
+                                                    child = buildWheel(
+                                                      Size_Width: Size_Width,
+                                                      Size_Height: Size_Height,
+                                                      angle: (SetRxData
+                                                                  .Measured_Steer_Angle_Fr *
+                                                              (-pi)) /
+                                                          180,
+                                                    );
+                                                    break;
+                                                  case 4:
+                                                    child = buildWheel(
+                                                      Size_Width: Size_Width,
+                                                      Size_Height: Size_Height,
+                                                      angle: (SetRxData
+                                                                  .Measured_Steer_Angle_Rr *
+                                                              (-pi)) /
+                                                          180,
+                                                    );
+                                                    break;
+                                                  default:
+                                                    child = SizedBox
+                                                        .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
+                                                    break;
+                                                }
+                                                break;
+                                              default:
+                                                child = SizedBox
+                                                    .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
+                                                break;
+                                            }
+
+                                            return GestureDetector(
+                                              onTap: () {},
+                                              child: Container(
+                                                // height: cellHeight,
+                                                decoration: BoxDecoration(
+                                                    // color: Colors.red,
+                                                    // shape: BoxShape.circle,
+                                                    ),
+                                                child: child,
+                                              ),
+                                            );
+                                          },
+                                        ),
+                                      ]),
+                                ),
                               ),
-                            )),
+                            ),
                             GridView.builder(
                               gridDelegate:
                                   SliverGridDelegateWithFixedCrossAxisCount(
@@ -344,92 +442,6 @@ class _JoystickViewState extends State<JoystickView> {
                                 );
                               },
                             ),
-                            GridView.builder(
-                              gridDelegate:
-                                  SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 7,
-                              ),
-                              itemCount: 7 * 7,
-                              itemBuilder: (context, index) {
-                                int row = index ~/ 7;
-                                int col = index % 7;
-                                Widget child;
-                                switch (col) {
-                                  case 2:
-                                    switch (row) {
-                                      case 2:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Fl *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      case 4:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Rl *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      default:
-                                        child = SizedBox
-                                            .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
-                                        break;
-                                    }
-                                    break;
-                                  case 4:
-                                    switch (row) {
-                                      case 2:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Fr *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      case 4:
-                                        child = buildWheel(
-                                          Size_Width: Size_Width,
-                                          Size_Height: Size_Height,
-                                          angle: (SetRxData
-                                                      .Measured_Steer_Angle_Rr *
-                                                  (-pi)) /
-                                              180,
-                                        );
-                                        break;
-                                      default:
-                                        child = SizedBox
-                                            .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
-                                        break;
-                                    }
-                                    break;
-                                  default:
-                                    child = SizedBox
-                                        .shrink(); // 나머지 경우에는 빈 상태로 설정합니다.
-                                    break;
-                                }
-
-                                return GestureDetector(
-                                  onTap: () {},
-                                  child: Container(
-                                    // height: cellHeight,
-                                    decoration: BoxDecoration(
-                                        // color: Colors.red,
-                                        // shape: BoxShape.circle,
-                                        ),
-                                    child: child,
-                                  ),
-                                );
-                              },
-                            ),
                             ClipRect(
                               // Overflow 속성 사용
                               child: CustomPaint(
@@ -447,6 +459,7 @@ class _JoystickViewState extends State<JoystickView> {
 
                                     return GestureDetector(
                                       onTap: () {
+                                        // print('${row}, ${col}');
                                         setState(() {
                                           if ((row == 5) & (col == 5)) {
                                             Haptics.vibrate(HapticsType.light);
@@ -525,7 +538,7 @@ class _JoystickViewState extends State<JoystickView> {
                                 left: -50, // 가운데에서 오른쪽으로 10만큼 떨어진 위치
                                 child: Icon(Icons.navigate_before,
                                     size: (Size_Width * 0.2)),
-                                //       child: ShaderMask(
+                                // child: ShaderMask(
                                 //   shaderCallback: (Rect bounds) {
                                 //     return LinearGradient(
                                 //       begin: Alignment(
@@ -591,13 +604,14 @@ class _JoystickViewState extends State<JoystickView> {
                                 animation: AnimationVariables
                                     .rotateanimationController,
                                 builder: (context, child) {
-                                  return Transform.rotate(
+                                  return RepaintBoundary(
+                                      child: Transform.rotate(
                                     angle: AnimationVariables
                                             .rotateanimationController.value *
                                         2.0 *
                                         pi,
                                     child: child,
-                                  );
+                                  ));
                                 },
                                 child: ShaderMask(
                                   shaderCallback: (Rect bounds) {
@@ -622,13 +636,14 @@ class _JoystickViewState extends State<JoystickView> {
                                 animation: AnimationVariables
                                     .rotateanimationController,
                                 builder: (context, child) {
-                                  return Transform.rotate(
+                                  return RepaintBoundary(
+                                      child: Transform.rotate(
                                     angle: AnimationVariables
                                             .rotateanimationController.value *
                                         -2.0 *
                                         pi,
                                     child: child,
-                                  );
+                                  ));
                                 },
                                 child: ShaderMask(
                                   shaderCallback: (Rect bounds) {
@@ -657,19 +672,38 @@ class _JoystickViewState extends State<JoystickView> {
                               Container(
                                 width: (Size_Width * 0.15),
                                 height: ((Size_Height * 0.09)),
-                                decoration: BoxDecoration(
-                                  color: Color(0xFF212121),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
                                 alignment: Alignment.center,
-                                child: Container(
-                                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                  child: Text(
-                                    '${(SetRxData.Corner_Mode >= 0 && SetRxData.Corner_Mode < GlobalVariables.DriveMode.length) ? GlobalVariables.DriveMode[SetRxData.Corner_Mode] : 'Parking'}',
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: (Size_Width * 0.015),
-                                      color: Color(0xFFFFFFFF),
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    if (SetTxData.Drive_Mode_Switch == 0) {
+                                      SetTxData.Drive_Mode_Switch = 1;
+                                    } else {
+                                      SetTxData.Drive_Mode_Switch = 0;
+                                    }
+                                  },
+                                  style: ElevatedButton.styleFrom(
+                                    backgroundColor: Color(0xFF212121), // 버튼 색상
+                                    elevation: 0,
+                                    padding: EdgeInsets.zero,
+                                    shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(10),
+                                    ),
+                                  ),
+                                  child: Container(
+                                    width: (Size_Width * 0.3),
+                                    padding: EdgeInsets.symmetric(vertical: 10),
+                                    alignment: Alignment.center,
+                                    child: Text(
+                                      SetTxData.Drive_Mode_Switch == 0
+                                          ? GlobalVariables
+                                              .Drive_Mode_Switch_Label[0]
+                                          : GlobalVariables
+                                              .Drive_Mode_Switch_Label[1],
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: (Size_Width * 0.015),
+                                        color: Color(0xFFFFFFFF),
+                                      ),
                                     ),
                                   ),
                                 ),
@@ -994,11 +1028,13 @@ class _JoystickViewState extends State<JoystickView> {
     return Container(
       width: Size_Height * 0.07,
       height: Size_Height * 0.07,
-      child: Transform.rotate(
-        angle: angle,
-        child: AspectRatio(
-          aspectRatio: 1 / 1,
-          child: Image.asset('assets/images/wheel.png'),
+      child: RepaintBoundary(
+        child: Transform.rotate(
+          angle: angle,
+          child: AspectRatio(
+            aspectRatio: 1 / 1,
+            child: Image.asset('assets/images/wheel.png'),
+          ),
         ),
       ),
     );

@@ -68,6 +68,16 @@ class UDP {
     if (SetTxData.Pivot_Rcy < 0) {
       SetTxData.Msg2_SBW_Cmd_Tx = -(SetTxData.Msg2_SBW_Cmd_Tx);
     } else {}
+    if (SetTxData.Flag_Pivot) {
+      if (SetTxData.Flag_Pivot_Num >= 3) {
+        SetTxData.Button_Pedal = 7;
+        SetTxData.Flag_Pivot = false;
+        SetTxData.Flag_Pivot_Num = 0;
+      } else {
+        SetTxData.Flag_Pivot_Num++;
+      }
+    } else {}
+
     Data[0] = ((SetTxData.Msg2_SBW_Cmd_Tx / 0.01).toInt() & 0xFF);
     Data[1] = (((SetTxData.Msg2_SBW_Cmd_Tx / 0.01).toInt() >> 8) & 0xFF);
     Data[2] = ((SetTxData.Accel_Pedal_Angle / 0.5).toInt() & 0xFF);
@@ -83,18 +93,18 @@ class UDP {
     Data[12] = (SetTxData.Drive_Mode_Switch & 0xFF);
     Data[13] = (SetTxData.Pivot_Rcx & 0xFF);
     Data[14] = (SetTxData.Pivot_Rcy & 0xFF);
-    // Data[15] = (SetTxData.Accel_X & 0xFF);
-    // Data[16] = ((SetTxData.Accel_X >> 8) & 0xFF);
-    // Data[17] = (SetTxData.Accel_Y & 0xFF);
-    // Data[18] = ((SetTxData.Accel_Y >> 8) & 0xFF);
-    // Data[19] = (SetTxData.Accel_Z & 0xFF);
-    // Data[20] = ((SetTxData.Accel_Z >> 8) & 0xFF);
-    // Data[21] = (SetTxData.Gyro_Y & 0xFF);
-    // Data[22] = ((SetTxData.Gyro_Y >> 8) & 0xFF);
-    // Data[23] = (SetTxData.Gyro_P & 0xFF);
-    // Data[24] = ((SetTxData.Gyro_P >> 8) & 0xFF);
-    // Data[25] = (SetTxData.Gyro_R & 0xFF);
-    // Data[26] = ((SetTxData.Gyro_R >> 8) & 0xFF);
+    Data[15] = (SetTxData.Accel_X & 0xFF);
+    Data[16] = ((SetTxData.Accel_X >> 8) & 0xFF);
+    Data[17] = (SetTxData.Accel_Y & 0xFF);
+    Data[18] = ((SetTxData.Accel_Y >> 8) & 0xFF);
+    Data[19] = (SetTxData.Accel_Z & 0xFF);
+    Data[20] = ((SetTxData.Accel_Z >> 8) & 0xFF);
+    Data[21] = (SetTxData.Gyro_Y & 0xFF);
+    Data[22] = ((SetTxData.Gyro_Y >> 8) & 0xFF);
+    Data[23] = (SetTxData.Gyro_P & 0xFF);
+    Data[24] = ((SetTxData.Gyro_P >> 8) & 0xFF);
+    Data[25] = (SetTxData.Gyro_R & 0xFF);
+    Data[26] = ((SetTxData.Gyro_R >> 8) & 0xFF);
     return Data;
   }
 
